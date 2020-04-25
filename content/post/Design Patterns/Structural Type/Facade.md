@@ -14,7 +14,7 @@ author: "java-my-life"
 - 外观模式,隐藏系统的复杂性,并向客户端提供了一个客户端可以访问系统的接口.这种类型的设计模式属于结构型模式,它向现有的系统添加一个接口,来隐藏系统的复杂性
 - 这种模式设计到一个单一的类,该类提供了客户端请求的假话方法和现有系统类方法的委托调用
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/facade/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/facade/架构图.png)
 
 - `Facade(门面角色)`:客户端可以调用这个角色，此角色知晓相关子系统的功能和责任.
 - `SubSystem(子系统)`:可以同时有一个或者多个子系统。每个子系统都不是一个单独的类，而是一个类的集合（如上面的子系统就是由ModuleA、ModuleB、ModuleC三个类组合而成）。每个子系统都可以被客户端直接调用，或者被门面角色调用。子系统并不知道门面的存在，对于子系统而言，门面仅仅是另外一个客户端而已
@@ -88,7 +88,7 @@ public class ModuleFacade {
 > Servlet 中的门面模式
 
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/facade/servlet.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/facade/servlet.png)
 
 
 ```
@@ -110,7 +110,7 @@ public class TestServlet extends HttpServlet {
 }
 ```
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/facade/servlet-facade.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/facade/servlet-facade.png)
 
 - 注意红色方框圈中的类，StandardWrapperValue类中的invoke方法225行代码如下：
 

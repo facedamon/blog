@@ -29,7 +29,7 @@ author: "java-my-life"
 
 &emsp;&emsp;对于装机工程师而言，他只知道组装一台电脑，需要相应的配件，但是具体使用什么样的配件，还得由客户端说了算。也就是说装机工程师只负责组装，而客户负责选择装配所需要的具体配件。因此，当装机工程师为不同的客户组黄电脑时，只需要根据客户的装机方案，去获取相应的配件，然后组装即可。
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/abstract-factory/抽象工厂组装图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/abstract-factory/抽象工厂组装图.png)
 
 - 缺点：没有维护配件之间的兼容性
 
@@ -37,30 +37,30 @@ author: "java-my-life"
 
 - 每一个模式都是针对移动问题的解决方案。抽象工厂模式与工厂方法模式的最大区别就在于，工厂方法模式针对的是一个产品等级结构；而抽象工厂则需要面对多个产品等级结构。
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/abstract-factory/产品等级结构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/abstract-factory/产品等级结构图.png)
 
 - 产品族：指位于不同产品等级结构中，功能相关联的产品组成的，功能相关联的组成家族。
 
 &emsp;&emsp;显然，每个产品族中含有产品的数目，与产品等级结构的数目是相等的。产品的等级结构与产品族将产品按照不同方向划分，形成一个二维的坐标系。横轴表示产品的等级结构，纵轴表示族，上图共有两个产品族，分布于三个不同的产品等级结构中。只要指明一个产品所处的产品族以及它所属的等级结构，就可以唯一的确定这个产品。
 &emsp;&emsp;上面所给出的三个不同的等级结构具有平行的结构。因此，如果采用工厂方法模式，就势必要使用三个独立的工厂等级结构来对付这三个产品等级结构。由于这三个等级结构的相似性，会导致三个平行的工厂等级结构。随着产品等级结构的数目的增加，工厂方法模式所给出的工厂等级结构的数目也会随之增加。如下图：
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/abstract-factory/产品族.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/abstract-factory/产品族.png)
 
 - 那么是否可以使用同一个工厂等级结构来对付这写相同或者极为相似的产品等级结构，这就是抽象工厂模式的好处，同一个工厂等级负责多个不同产品等级结构中产品的创建。
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/abstract-factory/产品等级-产品族.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/abstract-factory/产品等级-产品族.png)
 
 - 抽象工厂模式是对象的创建模式，它是工厂方法模式的进一步推广。假设一个子系统需要一些产品对象，而这些产品又属于一个以上的产品等级结构。那么为了将消费这些产品对象的责任和创建这些产品对象的责任分割开来，可以引进抽象工厂模式。这样的话，消费产品的一方不需要直接参与产品的创建工作，而只需要向一个公用的工厂接口请求所需要的产品。
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/abstract-factory/组合图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/abstract-factory/组合图.png)
 
 - 由于这两个产品族的等级结构相同，因此使用同一个工厂族也可以处理这两个产品族的创建问题，这就是抽象工厂模式。
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/abstract-factory/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/abstract-factory/架构图.png)
 
 - 可以看出，每一个工厂角色都有两个工厂方法，分别负责创建分属不同产品等级结构的产品对象。
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/abstract-factory/详细结构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/abstract-factory/详细结构图.png)
 
 - 前面实现的CPU接口和主板接口都不需要变化。前面示例中创建CPU的简单工厂和创建主板的简单工厂，都不需要，需要加入新的抽象工厂类和实现。
 

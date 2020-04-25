@@ -19,7 +19,7 @@ author: "java-my-life"
 - 合成模式的实现根据所实现接口的区别分为两种形式,分别称为安全式和透明式.
 - 安全式合成模式:要求管理聚集的方法只出现在树枝构件类中,而不出现在树叶构件类中.
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/composite/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/composite/架构图.png)
 
 - Component(抽象构件):它给参加组合的对象定义出公共的接口及其默认行为,可以用来管理所有的子对象.合成对象通常把它所包含的子对象当作类型为Component的对象.在安全的合成模式,构件角色并不定义出管理子对象的方法,这一定义由树枝构件对象给出.
 - Left(树叶构件):树叶对象是没有下级子对象,定义出参加组合的原始对象的行为.

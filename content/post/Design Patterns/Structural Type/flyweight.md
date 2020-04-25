@@ -22,7 +22,7 @@ author: "java-my-life"
 
 - 享元对象能做到共享的关键是区分内蕴状态(Internal State)和外蕴状态(External State)
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/flyweight/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/flyweight/架构图.png)
 
 - `Flyweight(**抽象享元**)`：给出一个抽象接口，以规定出所有具体享元角色需要实现的方法
 - `ConcreteFlyweight(**具体享元**)`：实现抽象享元角色所规定的接口,如果有内蕴状态的话，必须负责为内蕴状态提供存储空间

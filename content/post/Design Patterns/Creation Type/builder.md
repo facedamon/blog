@@ -21,7 +21,7 @@ author: "java-my-life"
 
 - 结构
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/builder/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/builder/架构图.png)
 
 - `Builder(抽象建造者)`:抽象接口，规范产品对象的各个组成成分的建造。此接口独立于应用程序的商业逻辑。模式中直接创建产品对象的是具体建造者(ConcreteBuilder)角色.具体建造者类必须实现这个接口所要求的两种方法:一种是**建造者方法**，一种是**返还结构方法**。有多少零件就有多少构造方法
 - `ConCreteBuilder(具体构造者)`:担任这个角色的是应用程序紧密相关的一些类，它们在应用程序调用下创建产品实例.该角色要完成的任务包括:1.实现Builder接口，给出完整的创建产品实例操作.2.在构造完成后，提供产品的实例.
@@ -94,7 +94,7 @@ public class Director{
 
 - 我们假设一个快餐店的商业案例，其中，一个典型的套餐可以是一个汉堡（Burger）和一杯冷饮（Colddrink）。汉堡（Burger）可以是素食汉堡（Veg Burger）或鸡肉汉堡（Chicken Burger），它们是包在纸盒中。冷饮（Colddrink）可以是可口可乐（coke）或百事可乐（pepsi），它们是装在瓶子中。我们将创建一个表示食物条目（比如汉堡和冷饮）的 Item 接口和实现 Item 接口的实体类，以及一个表示食物包装的 Packing 接口和实现Packing接口的实体类，汉堡是包在纸盒中，冷饮是装在瓶子中。然后我们创建一个 Meal 类，带有 Item 的 ArrayList 和一个通过结合 Item 来创建不同类型的 Meal 对象的 MealBuilder。BuilderPatternDemo，我们的演示类使用 MealBuilder 来创建一个 Meal
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/builder/快餐架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/builder/快餐架构图.png)
 
 > 肯德基案例程序
 

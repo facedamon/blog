@@ -19,7 +19,7 @@ author: "java-my-life"
 
 - 结构：策略模式是对算法的包装，是把使用算法的责任和算法本身分割开来，委派给不同的对象管理。策略模式通常把一个系列的算法包装到一系列的策略类里面，作为一个抽象策略类的子类。用一句话来说，就是：“准备一组算法，并将每一个算法封装起来，使得它们可以互换”。下面就以一个示意性的实现讲解策略模式实例的结构
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Behavior-Type/strategy/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/strategy/架构图.png)
 
 - `Context(环境角色)`:持有一个Strategy引用
 - `Strategy(抽象策略角色)`:这是一个抽象角色,通常由一个接口或这抽象类实现.此角色给出所有的具体策略类所需要的接口
@@ -87,7 +87,7 @@ public class ConcreteStrategyB implements Strategy {
 
 　　算法三：对高级会员提供20%的促销折扣。
 
-![avatat](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Behavior-Type/strategy/案例图.png)
+![avatat](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/strategy/案例图.png)
 
 ```
 public interface MemberStrategy {

@@ -20,7 +20,7 @@ author: "java-my-life"
     - cache形式
 
 - 简单形式的原型模式
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/prototype/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/prototype/架构图.png)
 
 - Prototype(抽象原型):通常油一个接口或抽象类实现。此角色给出所有的具体原型类所需的接口
 - Concrete Prototype(具体原型):被复制的对象。此角色需要实现抽象的原型角色所要求的接口
@@ -114,7 +114,7 @@ public Object deepClone() throws IOException,ClassNotFoundException{
 - 下一步定义ShapeCache,该类把shape对象存储在一个hashtable中，并在请求的时候返回它们的克隆
 - PrototypePatternDemo ,演示类使用试用ShapeCache来获取Shape对象
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Creation-Type/prototype/案例.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/prototype/案例.png)
 
 > 案例2代码
 

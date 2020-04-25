@@ -13,7 +13,7 @@ A super concise theme for Hugo
 
 ## Screenshots
 
-![even-showcase](https://raw.githubusercontent.com/olOwOlo/hugo-theme-even/master/images/showcase.png)
+![even-showcase](https://cdn.jsdelivr.net/gh/olOwOlo/hugo-theme-even@master/images/showcase.png)
 
 ## Installation
 

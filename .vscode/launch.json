@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - ArrayQueue",
+            "request": "launch",
+            "mainClass": "ArrayQueue"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DlinkTests",
+            "request": "launch",
+            "mainClass": "DlinkTests"
+        }
+    ]
+}

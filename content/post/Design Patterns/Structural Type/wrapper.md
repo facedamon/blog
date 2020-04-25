@@ -15,7 +15,7 @@ author: "java-my-life"
 
 - 结构: 装饰模式以对客户透明的方式动态地给一个对象附加更多的责任.换言之,客户端并不会觉得在装饰前和装饰后有什么不同.装饰模式可以在不使用创造更多子类的情况下,将对象的功能加以扩展
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/wrapper/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/wrapper/架构图.png)
 
 
 - `Component(抽象构件)`:给出一个抽象接口,以规范准备接收附加责任对象

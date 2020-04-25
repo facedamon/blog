@@ -19,7 +19,7 @@ author: "java-my-life"
 
 - 结构
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Behavior-Type/interpreter/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/interpreter/架构图.png)
 
 1. `Expression(抽象表达式)`:声明一个所有的具体表达式角色都需要实现的抽象接口.这个接口主要时一个Interpret()方法,乘坐解释操作.
 2. `Terminal Expression(终结符表达式)`:实现了抽象表达式角色所要求的接口,主要时一个interpret()方法;文法中的每一个终结符都具有一个具体中介表达式与之对应.比如有一个简单的公式R=R1+R2,再里面R1和R2就是终结符,对应的解析R1和R2的解释器就是终结符表达式.
@@ -36,7 +36,7 @@ Constant ::='true'|'false'
 ```
 
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Behavior-Type/interpreter/案例图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/interpreter/案例图.png)
 
 - 源代码
 - 抽象表达式角色

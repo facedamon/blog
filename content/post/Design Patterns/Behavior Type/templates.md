@@ -21,7 +21,7 @@ author: "java-my-life"
 模板方法模式需要开发抽象类和具体子类的设计师之间的协作。一个设计师负责给出一个算法的轮廓和骨架，另一些设计师则负责给出这个算法的各个逻辑步骤。代表这些具体逻辑步骤的方法称做基本方法(primitive method)；而将这些基本方法汇总起来的方法叫做模板方法(template method)，这个设计模式的名字就是从此而来
 
 　　
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Behavior-Type/template/抽象模板架构.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/template/抽象模板架构.png)
 
 - `Abstract Template(抽象模板角色)`:定义一个或多个抽象操作,一遍让子类实现.这些抽象操作叫做基本操作,它们是一个顶级逻辑的组成步骤
 
@@ -82,7 +82,7 @@ public class ConcreteTemplate extends AbstractTemplate{
 
 　　显然，系统需要一个抽象角色给出顶级行为的实现，而将两个作为细节步骤的基本方法留给具体子类实现。由于需要考虑的账号有两种：一是货币市场账号，二是定期存款账号
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Behavior-Type/interpreter/案例图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/interpreter/案例图.png)
 
 ```
 public abstract class Account {

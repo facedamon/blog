@@ -15,7 +15,7 @@ author: "java-my-life"
 结构:类适配器模式和对象的适配器模式
 类适配器模式 
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/adapter/架构图.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/adapter/架构图.png)
 
 &emsp;&emsp;Adaptee类并没有sampleOperation2()方法,而客户端则期待这个方法。为使客户端能够使用Adaptee类,提供一个中间环节,即类Adapter,把Adaptee的API与Target类的API衔接起来.Adapter与Adaptee是继承关系,这决定了这个适配器模式是类的.
 
@@ -43,7 +43,7 @@ public class Adapter extends Adatee implements Target{
 &emsp;&emsp;对象适配器模式
 与类的适配器模式一样,对象的适配器模式把被适配的类的APi转换为目标类的API,与类的适配器模式不同的是,对象的适配器模式不是使用继承关系连接Adaptee类,而是使用委派关系连接到Adaptee类.
 
-![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/adapter/对象适配器.png)
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/adapter/对象适配器.png)
 
 &emsp;&emsp;从上图可以看出,Adaptee类并没有sampleOperation2()方法,而客户端期待这个方法.提供一个包装(Wrapper)的Adapter.这个包装类包装了一个Adaptee的实例,从而此包装类能够把Adaptee的API与Target类的APiece衔接起来.
 
@@ -91,7 +91,7 @@ public class Adapter {
 
 &emsp;&emsp;我们有一个 MediaPlayer 接口和一个实现了 MediaPlayer 接口的实体类 AudioPlayer。默认情况下，AudioPlayer 可以播放 mp3 格式的音频文件。我们还有另一个接口 AdvancedMediaPlayer 和实现AdvancedMediaPlayer 接口的实体类。该类可以播放vlc和mp4格式的文件。我们想要让 AudioPlayer 播放其他格式的音频文件。为了实现这个功能，我们需要创建一个实现了 MediaPlayer 接口的适配器类 MediaAdapter，并使用AdvancedMediaPlayer对象来播放所需的格式。AudioPlayer 使用适配器类 MediaAdapter 传递所需的音频类型，不需要知道能播放所需格式音频的实际类。AdapterPatternDemo，我们的演示类使用 AudioPlayer 类来播放各种格式.
  
- ![avatar](https://raw.githubusercontent.com/facedamon/MarkDownPhotos/master/Design-Patterns/Structural-Type/adapter/案例图.png)
+ ![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/adapter/案例图.png)
 
  - `AdvancedMediaPlayer.Interface`
 ```
