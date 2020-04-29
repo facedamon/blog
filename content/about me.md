@@ -43,8 +43,3 @@ weight: 50
 
 <br>
 
-<center><h3>被阿姆那种自我毁灭又重生的事迹所折服，阿姆每张专辑背后的故事我都如数家珍。<h3/><center/>
-
-<br>
-
-<center><h1>I am a Stan<h1/><center/>
