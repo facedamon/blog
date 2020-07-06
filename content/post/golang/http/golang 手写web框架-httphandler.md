@@ -206,12 +206,12 @@ func (e *Engine) POST(pattern string, handler HandlerFunc) {
 
 // Run defines the method to start a http server
 func (e *Engine) Run(addr string) (err error) {
-    return http.ListenAndServe(addr, engine)
+    return http.ListenAndServe(addr, e)
 }
 
-func (e *Engine) ServeHTTP(w http.REsponseWriter, req *http.Request) {
+func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
     key := req.Method + "-" + req.URL.Path
-    if handler, ok := range e.router[key]; ok {
+    if handler, ok := e.router[key]; ok {
         handler(w, req)
     } else {
         fmt.Fprintf(w, "404 NOT FOUND: %s\n", req.URL)

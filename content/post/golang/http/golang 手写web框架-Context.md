@@ -22,16 +22,16 @@ author: "geektutu"
 
 ```
 func main() {
-    r := gee.New()
-    r.GET("/", func(c *gee.Context){
+    r := geew.New()
+    r.GET("/", func(c *geew.Context){
         c.HTML(http.StatucOK, "<h1>Hello Gee</h1>")
     })
-    r.GET("/hello", func(c *gee.Context){
+    r.GET("/hello", func(c *geew.Context){
         c.String(http.StatusOK, "htllo %s, you are at %s\n", c.Query("name"), c.Path)
     })
 
-    r.POST("/login", func(c *gee.Context){
-        c.JSON(http.StatusOK, gee.H{
+    r.POST("/login", func(c *geew.Context){
+        c.JSON(http.StatusOK, geew.H{
             "username": c.PostForm("username"),
             "password": c.PostForm("password")
         })
@@ -41,8 +41,8 @@ func main() {
 }
 ```
 
-- `Handler`的参数变成了`gee.Context`，提供了查询Query/PostForm参数的功能。
-- `gee.COntext`封装了`HTML/String/JSON`函数，能够快速构造HTTP响应。
+- `Handler`的参数变成了`geew.Context`，提供了查询Query/PostForm参数的功能。
+- `geew.COntext`封装了`HTML/String/JSON`函数，能够快速构造HTTP响应。
 
 # 设计Context
 
@@ -70,7 +70,7 @@ if err := encoder.Encode(obj); err != nil {
 - 封装后
 
 ```
-c.JSON(http.StatucOK, gee.H{
+c.JSON(http.StatucOK, geew.H{
    "name": c.PostForm("name"),
     "password": c.PostForm("password"),
 })
@@ -145,7 +145,7 @@ func (c *Context) HTML(code int, html string) {
 }
 ```
 
-- 代码最开头，给`map[string]interface{}`起了一个别名`gee.H`，构建JSON数据时，显的更简洁。
+- 代码最开头，给`map[string]interface{}`起了一个别名`geew.H`，构建JSON数据时，显的更简洁。
 - `Context`目前只包含了http.ResponseWriter和*http.Request, 另外提供了对Method和Path这两个常用属性的直接访问。
 - 提供了访问Query和PostForm参数的方法。
 - 提供了快速构造String/Data/JSON/HTML响应的方法。
@@ -155,15 +155,133 @@ func (c *Context) HTML(code int, html string) {
 &emsp;&emsp;我们将路由相关的方法和结构提取出来，放到一个新的文件中的router.go，方便我们下一次对router的功能进行增强，例如提供动态路由的支持。router的handle方法做了一个细微的调整，即handler的参数，变成了Context。
 
 ```
-type rputer struct {
-    handlers map[string]HandlerFunc
+package geew
+
+import (
+        "log"
+        "net/http"
+)
+
+type router struct {
+        handlers map[string]HandlerFunc
 }
 
 func newRouter() *router {
-    return &couter{handlers: make(map[string]HandlerFunc)}
+        return &router{handlers: make(map[string]HandlerFunc)}
 }
 
-func (r *router) addRoute(method string. pattern string, handler HandlerFunc) {
-    log.Printf("Route %4s - %s", method, pattern)
+func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {
+        log.Printf("Route %4s - %s", method, pattern)
+        key := method + "-" + pattern
+        r.handlers[key] = handler
 }
+
+func (r *router) handle(c *Context) {
+        key := c.Method + "-" + c.Path
+        if handler, ok := r.handlers[key]; ok {
+                handler(c)
+        } else {
+                c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+        }
+}
+```
+
+## geew.go (入口)
+
+```
+package geew
+
+import (
+        "net/http"
+)
+
+// HandlerFunc defines the request handler used by geew
+//type HandlerFunc func(http.ResponseWriter, *http.Request)
+type HandlerFunc func(*Context)
+
+// Engine implement the interface of ServeHTTP
+type Engine struct {
+        //router map[string]HandlerFunc
+        router *router
+}
+
+// New is the constructor of geew.Engine
+func New() *Engine {
+        return &Engine{router: newRouter()}
+}
+
+func (e *Engine) addRoute(method string, pattern string, handler HandlerFunc) {
+        e.router.addRoute(method, pattern, handler)
+}
+
+// GET defines the method to add GET request
+func (e *Engine) GET(pattern string, handler HandlerFunc) {
+        e.addRoute("GET", pattern, handler)
+}
+
+// POST defines the method to add POST request
+func (e *Engine) POST(pattern string, handler HandlerFunc) {
+        e.addRoute("POST", pattern, handler)
+}
+
+// Run defines the method to start up a http server
+func (e *Engine) Run(addr string) error {
+        return http.ListenAndServe(addr, e)
+}
+
+// Implement the HTTP ServeHTTP
+func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+        c := newContext(w, req)
+        e.router.handle(c)
+}
+```
+
+&emsp;&emsp;将`router`相关的代码独立后，`geew.go`简单了不少。最终要的还是通过实现`ServeHTTP`接口，接管了所有的HTTP请求。相比第一天的代码，这个方法也有细微的调整，在调用router.handle之前，构造了一个`Context`对象。这个对象目前还非常简单，仅仅是包装了原来的两个参数，之后我们会慢慢地给Context插上翅膀。
+
+&emsp;&emsp;如何使用，运行`go test -v -run TestDay2 day2_test.go`
+
+```
+package example
+
+import (
+        "geew"
+        "net/http"
+        "testing"
+)
+
+func TestDay2(t *testing.T) {
+        r := geew.New()
+        r.GET("/", func(c *geew.Context) {
+                c.HTML(http.StatusOK, "<h1>Hello Geew</h1>")
+        })
+        r.GET("/hello", func(c *geew.Context) {
+                c.String(http.StatusOK, "hello %s, you`re at %s\n", c.Query("name"), c.Path)
+        })
+        r.POST("/login", func(c *geew.Context) {
+                c.JSON(http.StatusOK, geew.H{
+                        "username": c.PostForm("username"),
+                        "password": c.PostForm("password"),
+                })
+        })
+
+        r.Run(":9999")
+}
+```
+
+```
+$ curl -i http://localhost:9999/
+HTTP/1.1 200 OK
+Date: Mon, 12 Aug 2019 16:52:52 GMT
+Content-Length: 18
+Content-Type: text/html; charset=utf-8
+<h1>Hello Gee</h1>
+
+$ curl "http://localhost:9999/hello?name=geektutu"
+hello geektutu, you're at /hello
+
+$ curl "http://localhost:9999/login" -X POST -d 'username=geektutu&password=1234'
+{"password":"1234","username":"geektutu"}
+
+$ curl "http://localhost:9999/xxx"
+404 NOT FOUND: /xxx
 ```
