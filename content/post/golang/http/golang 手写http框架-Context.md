@@ -1,15 +1,12 @@
 ---
-title: "[手写web框架 (二) | golang context]"
+title: "[手写http框架 (二) | golang context]"
 date: 2020-06-24T11:19:56+08:00
-#lastmod: 2019-08-30T01:37:56+08:00
 toc: true
 draft: false
 tags: ["golang"]
-categories: ["golang/手写web框架"]
-author: "geektutu"
+categories: ["golang/手写http框架"]
+author: "facedamon"
 ---
-
- > 转载自 https://geektutu.com/post/gee-day2.html
 
  # 摘要
 
@@ -76,7 +73,7 @@ c.JSON(http.StatucOK, geew.H{
 })
 ```
 
-&emsp;&emsp;针对使用场景，封装`*http.Request`和`http.ResponseWriter`的方法，简化相关接口的调用，只是设计Context的原因之一。对于框架来说，还需要支撑额外的功能。例如，将来解析动态路由`/hello:name`，参数`:name`的值放在哪呢？再比如，框架需要支持中间件，那中间件产生的信息放在哪？Context随着每一个请求的出现而产生，请求的结束而销毁，和当前请求强相关的信息都应该由Context承载。因此，设计Context结构，扩展性和复杂性留在了内部，而对外简化接口。路由的处理函数，以及将要实现的中间件，参数都统一使用Context实例，Context就像一次绘画的百宝箱，可以找到任何东西。
+&emsp;&emsp;针对使用场景，封装`*http.Request`和`http.ResponseWriter`的方法，简化相关接口的调用，只是设计Context的原因之一。对于框架来说，还需要支撑额外的功能。例如，将来解析动态路由`/hello:name`，参数`:name`的值放在哪呢？再比如，框架需要支持中间件，那中间件产生的信息放在哪？Context随着每一个请求的出现而产生，请求的结束而销毁，和当前请求强相关的信息都应该由Context承载。因此，设计Context结构，扩展性和复杂性留在了内部，而对外简化接口。路由的处理函数，以及将要实现的中间件，参数都统一使用Context实例，Context就像一次会话的百宝箱，可以找到任何东西。
 
 ## context.go
 
@@ -89,7 +86,13 @@ type Context struct {
     Req *http.Request
     Path string
     Method string
-    StatusCode int    
+    StatusCode int
+
+    // queryCache use url.ParseQuery cached the param query result from c.Req.URL.Query
+    queryCache url.Values
+    //formCache use url.ParseQuery cached PostForm contains the parsed form data from POST,
+    //PUT body parameters.
+    formCache url.Values
 }
 
 func newContext()(w http.ResponseWriter, req *http.Request) *Context {
@@ -98,15 +101,123 @@ func newContext()(w http.ResponseWriter, req *http.Request) *Context {
         Req: req,
         Path: req.URL.Path,
         Method: req.Method,
+        quaryCache: nil,
+        formCache: nil,
     }
 }
 
-func (c *Context) PostForm(key string) string {
-    return c.Req.FormValue(key)
+func (c *Context) initQueryCache() {
+        if c.queryCache == nil {
+                c.queryCache = c.Req.URL.Query()
+        }
+}
+
+func (c *Context) GetQueryArray(key string) ([]string, bool) {
+        c.initQueryCache()
+        if values, ok := c.queryCache[key]; ok && len(values) > 0 {
+                return values, true
+        }
+        return []string{}, false
+}
+
+// QueryArray returns a slice of strings for given query key
+// the length od the slice depends on the number of params with the given key
+func (c *Context) QueryArray(key string) []string {
+        values, _ := c.GetQueryArray(key)
+        return values
+}
+
+func (c *Context) GetQuery(key string) (string, bool) {
+        if values, ok := c.GetQueryArray(key); ok {
+                return values[0], ok
+        }
+        return "", false
+}
+
+func (c *Context) DefaultQuery(key, defaultValue string) string {
+        if value, ok := c.GetQuery(key); ok {
+                return value
+        }
+        return defaultValue
 }
 
 func (c *Context) Query(key string) string {
-    return c.REq.URL.Query().Get(key)
+        value, _ := c.GetQuery(key)
+        return value
+}
+
+func (c *Context) initFormCache() {
+        if c.formCache == nil {
+                c.formCache = make(url.Values)
+                r := c.Req
+                if err := r.ParseMultipartForm(MaxMultipartMemory); err != nil {
+                        if err != http.ErrNotMultipart {
+                                L.Error("error on parse multipart form array: %v", err)
+                        }
+                }
+                c.formCache = r.PostForm
+        }
+}
+
+// GetPostFormArray returns a slice of strings for a given form key
+func (c *Context) GetPostFormArray(key string) ([]string, bool) {
+        c.initFormCache()
+        if values := c.formCache[key]; len(values) > 0 {
+                return values, true
+        }
+        return []string{}, false
+}
+
+// PostFormArray returns a slice of strings for a given form key
+// the length of slice depends on the number of params with the given key
+func (c *Context) PostFormArray(key string) []string {
+        values, _ := c.GetPostFormArray(key)
+        return values
+}
+
+func (c *Context) GetPostForm(key string) (string, bool) {
+        if values, ok := c.GetPostFormArray(key); ok {
+                return values[0], ok
+        }
+        return "", false
+}
+
+func (c *Context) DefaultPostForm(key, defaultValue string) string {
+        if value, ok := c.GetPostForm(key); ok {
+                return value
+        }
+        return defaultValue
+}
+
+// PostForm returns the specified key from a POST urlencoded from or multipart form
+func (c *Context) PostForm(key string) string {
+        value, _ := c.GetPostForm(key)
+        return value
+}
+
+func (c *Context) Param(key string) string {
+        c.Req.ParseMultipartForm(MaxMultipartMemory)
+        v, _ := c.Params[key]
+        return v
+}
+
+func (c *Context) FormFile(name string) (*multipart.FileHeader, error) {
+        if c.Req.MultipartForm == nil {
+                if err := c.Req.ParseMultipartForm(MaxMultipartMemory); err != nil {
+                        return nil, err
+                }
+        }
+        f, fh, err := c.Req.FormFile(name)
+        if err != nil {
+                return nil, err
+        }
+        f.Close()
+        return fh, err
+}
+
+func (c *Context) MultipartForm() (*multipart.Form, error) {
+        err := c.Req.ParseMultipartForm(MaxMultipartMemory)
+        return c.Req.MultipartForm, err
 }
 
 func (c *Context) Status(code int) {
@@ -146,8 +257,8 @@ func (c *Context) HTML(code int, html string) {
 ```
 
 - 代码最开头，给`map[string]interface{}`起了一个别名`geew.H`，构建JSON数据时，显的更简洁。
-- `Context`目前只包含了http.ResponseWriter和*http.Request, 另外提供了对Method和Path这两个常用属性的直接访问。
-- 提供了访问Query和PostForm参数的方法。
+- `Context`目前只包含了http.ResponseWriter和*http.Request, 另外提供了对Method和Path这两个常用属性的直接访问.
+- 对Form的封装(采用了cache缓存), 供了访问Query和PostForm参数的方法。
 - 提供了快速构造String/Data/JSON/HTML响应的方法。
 
 ## router.go

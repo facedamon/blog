@@ -1,15 +1,12 @@
 ---
-title: "[手写web框架 (一) | golang http-handler]"
+title: "[手写http框架 (一) | golang http-handler]"
 date: 2020-06-23T15:19:56+08:00
-#lastmod: 2019-08-30T01:37:56+08:00
 toc: true
 draft: false
 tags: ["golang"]
-categories: ["golang/手写web框架"]
-author: "geektutu"
+categories: ["golang/手写http框架"]
+author: "facedamon"
 ---
-
- > 转载自 https://geektutu.com/post/gee-day1.html
 
 # 摘要
 
@@ -112,44 +109,43 @@ func main(){
 
 &emsp;&emsp;在`main`函数中，我们给`ListenAndServe`方法的第二个参数传入了刚才创建的`Engine`实例。至此，我们走出了实现Web框架的第一步，即，将所有的HTTP请求转向了我们自己的处理逻辑。还记得吗，在实现`Engine`之前，我们调用`http.HandleFunc`实现了路由和Handler的映射，也就是只能针对具体的路由写处理逻辑。比如`/hello`。但是在实现Engine知乎，我们拦截了所有的HTTP请求，拥有了统一的控制入口。在这里我们可以自由定义路由映射的规则，也可以统一添加一些处理逻辑，例如：日志、异常处理等。
 
-## Gee雏形
+## geew雏形
 
 &emsp;&emsp;接下来重新组织上面的代码，搭建出整个框架的雏形。最终的代码目录结构是这样的。
 
 ```
-gee/
-    |--gee.go
-    |--go.mod
-main.go
+geew/
+    |--example
+        |--example_test.go
+gee.go
+go.mod
 go.mod
 ```
 
 ### go.mod
 
 ```
-module example
+module geew
 
 go 1.14
 
-require gee v0.0.0
-
-replace gee ==> ./gee
+require geew v0.0.0
 ```
-- 在go.mod中使用replace将gee指向./gee
 
-## main.go
+## example_test.go
 
 ```
-package main
+package example
 
 import (
     "fmt"
     "net/http"
-    "gee"
+    "geew"
+    "testing"
 )
 
-func main(){
-    r := gee.New()
+func TestHandler(t *testing.T){
+    r := geew.New()
     r.GET("/", func(w http.ResponseWriter, req *http.Request){
         fmt.Fprintf(w, "URL.Path = %q\n", req.URL.Path)
     })
@@ -164,12 +160,12 @@ func main(){
 }
 ```
 
-&emsp;&emsp;看到这里，如果你使用过`gin`框架的话，肯定会觉得无比亲切。`gee`框架的设计以及API均参考了`gin`。使用New创建gee实例，使用`GET`方法添加路由，最后使用`Run`启动Web服务。这里的路由，只是静态路由，不支持`/hello/:name`这样的动态路由，动态路由我们将在下一次实现。
+&emsp;&emsp;看到这里，如果你使用过`gin`框架的话，肯定会觉得无比亲切。`geew`框架的设计以及API均参考了`gin`。使用New创建gee实例，使用`GET`方法添加路由，最后使用`Run`启动Web服务。这里的路由，只是静态路由，不支持`/hello/:name`这样的动态路由，动态路由我们将在下一次实现。
 
-## gee.go
+## geew.go
 
 ```
-package gee
+package geew
 
 import (
     "fmt"
@@ -219,13 +215,13 @@ func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 ```
 
-&emsp;&emsp;那么`gee.go`就是重头戏了，我们重点介绍一下这部分的实现。
+&emsp;&emsp;那么`geew.go`就是重头戏了，我们重点介绍一下这部分的实现。
 
 - 首先定义了类型`HandlerFunc`，这是提供给框架用户的，用来定义路由映射的处理方法。我们在`Engine`中，添加了一张路由映射表`router`，key由请求方法和静态路由地址构成，例如`GET-/`、`GET-/hello`、`/POST-/hello`，这样针对相同的路由，如果请求方法不同，可以映射不同的处理方法(Handler)，value是用户映射的处理方法。
 - 当用户调用`(*Engine).GET`方法时，会将路由和处理方法注册到映射表router中，`(*Engine).Run`方法是ListenAndServe的包装。
 - `Engine`实现的ServeHTTP方法的作用就是，解析请求路径，查找路由映射，如果查到就执行注册处理方法。如果查不到，就返回`404 NOT FOUND`。
 
-&emsp;&emsp;执行`go run main.go`.再用curl 工具访问，结果与开始的一致。
+&emsp;&emsp;执行`go test -v -run TestHandler example_test.go`.再用curl 工具访问，结果与开始的一致。
 
 ```
 $ curl http://localhost:9999/
@@ -239,4 +235,4 @@ $ curl http://localhost:9999/world
 404 NOT FOUND: /world
 ```
 
-&emsp;&emsp;至此，整个`Gee`框架的原型已经出来了。实现了路由映射表，提供了用户注册静态路由的方法，包装了启动服务的函数。当然，到目前为止，我们还没有实现比net/http标准库更强大的能力，不用担心，很快就可以将动态路由、中间件等功能添加上去了。
+&emsp;&emsp;至此，整个`geew`框架的原型已经出来了。实现了路由映射表，提供了用户注册静态路由的方法，包装了启动服务的函数。当然，到目前为止，我们还没有实现比net/http标准库更强大的能力，不用担心，很快就可以将动态路由、中间件等功能添加上去了。
