@@ -28,7 +28,8 @@ author: "facedamon"
 - **/p/blog**
 - **/p/related**
 
-// JPG
+
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/golang/trie_router.jpg)
 
 &emsp;&emsp;HTTP请求的路径恰好是由`/`分割的多端构成，因此，每一段可以作为前缀树的一个节点。我们通过树结构查询，如果中间某一层的节点都不满足条件，那么就说明没有匹配到路由。
 
