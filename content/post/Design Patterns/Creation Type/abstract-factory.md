@@ -64,66 +64,66 @@ author: "java-my-life"
 
 - 前面实现的CPU接口和主板接口都不需要变化。前面示例中创建CPU的简单工厂和创建主板的简单工厂，都不需要，需要加入新的抽象工厂类和实现。
 
-```
-public interface AbstractFactory{
-    public Cpu createCpu();
-    public Mainboard createMainboard();
-}
-```
 
-```
-public class IntelFactory implements AbstractFactory{
-    public Cpu createCpu(){
-        return Interl(755);
-    }
-    
-    public Mainboard createMainboard(){
-        return new IntelMainboard(755);
-    }
-}
-```
-```
-public class AmdFactory implements AbstractFactory{
-    public Cpu createCpu(){
-        return new AmdCpu(938);
-    }
-    
-    public Mainboard createMainboard(){
-        return new IntelMainboard()938;
-    }
-}
-```
+        public interface AbstractFactory{
+            public Cpu createCpu();
+            public Mainboard createMainboard();
+        }
+
+
+
+        public class IntelFactory implements AbstractFactory{
+            public Cpu createCpu(){
+                return Interl(755);
+            }
+            
+            public Mainboard createMainboard(){
+                return new IntelMainboard(755);
+            }
+        }
+
+
+        public class AmdFactory implements AbstractFactory{
+            public Cpu createCpu(){
+                return new AmdCpu(938);
+            }
+            
+            public Mainboard createMainboard(){
+                return new IntelMainboard()938;
+            }
+        }
+
 
 - 装机工程师类跟之前的实现相比，主要变化是：从客户端不再传入选择CPU和主板的参数，而是直接传入客户已经选择好的产品。这样就避免了单独去选择CPU和主板带来的兼容性问题，客户要选就选一套，就是一个系列。
 
-```
-public class ComputerEngineer{
-    private Cpu cpu;
-    private Mainboard mainboard;
-    
-    public void makeComputer(AbstractFactory af){
-        prepareHardwares(af);
-    }
-    
-    private void prepareHardwares(AbstractFactory af){
-        this.cpu = af.createCpu();
-        this.mainboard = af.createMainboard();
-        
-        this.cpu.calculate();
-        this.mainboard.installCPU();
-    }
-}
-```
 
-```
-public static void main(String[] args){
-    ComputerEngineer cf = new ComputerEngineer();
-    
-    AbstractFacatory af = new InterlFactory();
-    
-    cf.makeComputer(af);
-}
-```
+        public class ComputerEngineer{
+            private Cpu cpu;
+            private Mainboard mainboard;
+            
+            public void makeComputer(AbstractFactory af){
+                prepareHardwares(af);
+            }
+            
+            private void prepareHardwares(AbstractFactory af){
+                this.cpu = af.createCpu();
+                this.mainboard = af.createMainboard();
+                
+                this.cpu.calculate();
+                this.mainboard.installCPU();
+            }
+        }
+
+
+
+        public static void main(String[] args){
+            ComputerEngineer cf = new ComputerEngineer();
+            
+            AbstractFacatory af = new InterlFactory();
+            
+            cf.makeComputer(af);
+        }
+
 
 - 抽象工厂的功能是为一系列相关对象或相互依赖的对象创建一个接口。一定要注意，这个接口内的方法不是任意堆砌的，而是一系列相关或相互依赖的方法。
 - 由于抽象工厂定义的一系列对象通常是相关或相互依赖的，这些产品对象就构成了一个产品族，也就是抽象工厂定义了一个产品族。这样就带来了非常大的灵活性，切换产品族的时候，只要提供不同的抽象工厂实现就可以了，也就是说现在是以一个产品族作为一个整体被切换。
@@ -144,123 +144,122 @@ public static void main(String[] args){
 > 案例
 
 - `CPU.Interface`
-```
-public interface Cpu{
-    public void calculate();
-}
-```
+
+        public interface Cpu{
+            public void calculate();
+        }
+
 - `Mainboard.Interface`
-```
-public interface Mainboard{
-    public void installCPU();
-}
-```
+
+        public interface Mainboard{
+            public void installCPU();
+        }
+
 - `AmdCpu`
-```
-public class AmdCpu implements Cpu{
-    public int pins;
-    public AmdCpu(int pins){
-        this.pins = pins;
-    }
-    
-    @Override
-    public void calculate(){
-        //TODO
-        System.out.println("AMD CPU的阵脚数:"+pins);
-    }
-}
-```
+
+        public class AmdCpu implements Cpu{
+            public int pins;
+            public AmdCpu(int pins){
+                this.pins = pins;
+            }
+            
+            @Override
+            public void calculate(){
+                //TODO
+                System.out.println("AMD CPU的阵脚数:"+pins);
+            }
+        }
+
 - `IntelCpu`
-```
-public class IntelCpu implements Cpu{
-    private int pins = 0;//针脚数
-    public InterCpu(int pins){
-        this.pins = pins;
-    }
-    
-    @Override
-    public void calculate(){
-        //TODO
-        System.out.println("Intel CPU 的阵脚数："+pins);
-    }
-}
-```
+
+        public class IntelCpu implements Cpu{
+            private int pins = 0;//针脚数
+            public InterCpu(int pins){
+                this.pins = pins;
+            }
+            
+            @Override
+            public void calculate(){
+                //TODO
+                System.out.println("Intel CPU 的阵脚数："+pins);
+            }
+        }
+
 - `AmdMainboard`
-```
-public class AmdMainboard implements Mainboard{
-    private int cpuHoles = 0;
-    
-    public AmdMainboard(int cpuHoles){
-        this.cpuHoles = cpuHoles;
-    }
-    @Override
-    public void installCPU(){
-        //TODO
-        System.out.println("AMD主板的CPU插槽孔数是："+cpuHoles);
-    }
-}
-```
+
+        public class AmdMainboard implements Mainboard{
+            private int cpuHoles = 0;
+            
+            public AmdMainboard(int cpuHoles){
+                this.cpuHoles = cpuHoles;
+            }
+            @Override
+            public void installCPU(){
+                //TODO
+                System.out.println("AMD主板的CPU插槽孔数是："+cpuHoles);
+            }
+        }
+
 - `InterMainBoard`
-```
-public class InterMainBoard implements Mainboard{
-    private int cpuHoles = 0;//CPU插槽孔数
-    public InterlMainboard(int cpuHoles){
-        this.cpuHoles = cpuHoles;
-    }
-    
-    @Override
-    public void installCPU(){
-        //TODO
-        System.out.ptintln("Interl主板的CPU插槽孔数是："+cpuHoles);
-    }
-}
-```
+
+        public class InterMainBoard implements Mainboard{
+            private int cpuHoles = 0;//CPU插槽孔数
+            public InterlMainboard(int cpuHoles){
+                this.cpuHoles = cpuHoles;
+            }
+            
+            @Override
+            public void installCPU(){
+                //TODO
+                System.out.ptintln("Interl主板的CPU插槽孔数是："+cpuHoles);
+            }
+        }
+
 - `CpuFactory`
-```
-public class CpuFactory{
-    public static Cpu createCpu(int type){
-        Cpu cpu = null;
-        if(type == 1){
-            cpu = new IntelCpu(755);
-        }else if(type == 2){
-            cpu = new AmdCpu(938);
+
+        public class CpuFactory{
+            public static Cpu createCpu(int type){
+                Cpu cpu = null;
+                if(type == 1){
+                    cpu = new IntelCpu(755);
+                }else if(type == 2){
+                    cpu = new AmdCpu(938);
+                }
+                return cpu;
+            }
         }
-        return cpu;
-    }
-}
-```
+
 - `MainboardFactory`
-```
-public class MainboardFactory{
-    public static Mainboard createMainboard(int type){
-        Mainboard mainboard = null;
-        if(type == 1){
-            mainboard = new IntelMainboard(755);
-        }else if(type == 2){
-            mainboard = new AmdMainboard(938);
+
+        public class MainboardFactory{
+            public static Mainboard createMainboard(int type){
+                Mainboard mainboard = null;
+                if(type == 1){
+                    mainboard = new IntelMainboard(755);
+                }else if(type == 2){
+                    mainboard = new AmdMainboard(938);
+                }
+                return mainboard;
+            }
         }
-        return mainboard;
-    }
-}
-```
+
 - **`ComputerEngineer`**
 
-```
-public class ComputerEngineer{
-    private Cpu cpu;
-    private Mainboard mainboard;
-    
-    public void makeComputer(int cpuType,int mainboard){
-        prepareHardwares(cpuType,mainboard);
-    }
-    
-    private void prepareHardwares(int cpuType,int mainboard){
-        this.cpu = CpuFactory.createCpu(cpuType);
-        this.mainboard = MainboardFactory.createMainboard(mainboard);
-        
-        //测试
-        this.cpu.calculate();
-        this.mainboard.installCPU();
-    }
-}
-```
+
+        public class ComputerEngineer{
+            private Cpu cpu;
+            private Mainboard mainboard;
+            
+            public void makeComputer(int cpuType,int mainboard){
+                prepareHardwares(cpuType,mainboard);
+            }
+            
+            private void prepareHardwares(int cpuType,int mainboard){
+                this.cpu = CpuFactory.createCpu(cpuType);
+                this.mainboard = MainboardFactory.createMainboard(mainboard);
+                
+                //测试
+                this.cpu.calculate();
+                this.mainboard.installCPU();
+            }
+        }

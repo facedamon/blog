@@ -40,260 +40,244 @@ author: "facedamon"
 
 ## trie前缀树实现
 
-```
-// trie.go
-package geew
-
-type node struct {
-    // 待匹配路由 eg: /p/:lang/doc
-    pattern string
-    //路由的一部分 eg: :lang
-    part string
-    //子节点    eg: [doc, intro]
-    children []*node
-    //是否精确匹配 part含有:或*时为true
-    isWild bool
-}
-```
+		// trie.go
+		package geew
+		
+		type node struct {
+		    // 待匹配路由 eg: /p/:lang/doc
+		    pattern string
+		    //路由的一部分 eg: :lang
+		    part string
+		    //子节点    eg: [doc, intro]
+		    children []*node
+		    //是否精确匹配 part含有:或*时为true
+		    isWild bool
+		}
 
 &emsp;&emsp;与普通树不同，为了实现动态匹配，加上了`isWild`这个参数。即当我们匹配`/p/go/doc`这个路由时，第一层节点，`p`精准匹配到了`p`，第二层节点，`go`模糊匹配到`:lang`，那么将会把`lang`这个参数赋值为`go`，继续下一层匹配。我们将匹配的逻辑包装为一个**辅助函数**。
 
-```
-// 第一次匹配成功的节点
-func (n *node) matchChild(part string) *node {
-    for _, c := range n.children {
-        if c.part == part || c.isWild {
-            return c
-        }
-    }
-    return nil
-}
-
-// 匹配所有子节点
-func (n *node) matchChildren(part string) *node {    
-    nodes := make([]*node, 0)
-    for _, c := range n.children {
-        if c.part == part || c.isWild {
-            nodes = append(nodes, c)
-        }
-    }
-    return nodes
-}
-```
+		// 第一次匹配成功的节点
+		func (n *node) matchChild(part string) *node {
+		    for _, c := range n.children {
+		        if c.part == part || c.isWild {
+		            return c
+		        }
+		    }
+		    return nil
+		}
+		
+		// 匹配所有子节点
+		func (n *node) matchChildren(part string) *node {    
+		    nodes := make([]*node, 0)
+		    for _, c := range n.children {
+		        if c.part == part || c.isWild {
+		            nodes = append(nodes, c)
+		        }
+		    }
+		    return nodes
+		}
 
 &emsp;&emsp;对于路由来说，最重要的当然是注册与匹配了。开发服务时，注册路由规则，映射handler。访问时，匹配路由规则，查找对应的handler。因此，trie树需要支持节点的插入与查询。**插入功能:递归查找每一层的节点，如果没有匹配到当前part的节点，则新建一个，有一点需要注意，`/p/:lang/doc`只有在第三层节点(叶子节点)，即`doc`节点，`pattern`才会被设置为`/p/:lang/doc`。**
 
-```
-func (n *node) insert(pattern string, parts[]string, height int) {
-    //只有在叶子节点才会设置pattern
-    if len(parts) == height {
-        n.pattern = pattern
-        return
-    }
-
-    p := parts[height]
-    c := n.matchChild(p)
-    if c == nil {
-        c = &node{part: p, isWild: p[0] == ':'|| p[0] == '*'}
-        n.children = append(n.children, c)
-    }
-    c.insert(pattern, parts, height+1)
-}
-```
+		func (n *node) insert(pattern string, parts[]string, height int) {
+		    //只有在叶子节点才会设置pattern
+		    if len(parts) == height {
+		        n.pattern = pattern
+		        return
+		    }
+		
+		    p := parts[height]
+		    c := n.matchChild(p)
+		    if c == nil {
+		        c = &node{part: p, isWild: p[0] == ':'|| p[0] == '*'}
+		        n.children = append(n.children, c)
+		    }
+		    c.insert(pattern, parts, height+1)
+		}
 
 &emsp;&emsp;**当插入完成时，只有叶子节点的pattern是被赋值的，叶子节点的前缀节点的pattern是空的，因此，查询功能：当查询结束时，可以使用`n.pattern == ''`来判断路由是否匹配成功，递归查询每一层的节点，退出条件是，匹配到了`*`，或者匹配到了叶子节点**
 
-```
-func (n *node) search(parts []string, height int) *node {
-    if len(parts) == height || strings.HasPrefix(n.part, "*") {
-        if n.pattern == "" {
-            return nil
-        }
-        // 匹配到叶子节点
-        return n
-    }
-
-    p := parts[height]
-    cs := n.matchChildren(p)
-
-    for _, c := range cs {
-        rs := c.search(parts, height+1)
-        if rs != nil {
-            return rs
-        }
-    }
-    return nil
-}
-```
+		func (n *node) search(parts []string, height int) *node {
+		    if len(parts) == height || strings.HasPrefix(n.part, "*") {
+		        if n.pattern == "" {
+		            return nil
+		        }
+		        // 匹配到叶子节点
+		        return n
+		    }
+		
+		    p := parts[height]
+		    cs := n.matchChildren(p)
+		
+		    for _, c := range cs {
+		        rs := c.search(parts, height+1)
+		        if rs != nil {
+		            return rs
+		        }
+		    }
+		    return nil
+		}
 
 ## router
 
 &emsp;&emsp;接下来我们将trie树应用到路由中去吧。我们使用`roots`来存储每种请求方式的trie树根节点。使用`handlers`存储每种请求方式的`HandlerFunc`。getRoute函数解析了`:`和`*`两种通配符，返回一个map。例如`/p/go/doc`匹配到`/p/:lang/doc`，解析结果为`{lang: "go"}`。
 
-```
-// router.go
-package geew
-
-type router struct {
-    roots map[string]*node
-    handlers map[string]HandlerFunc
-}
-
-func newRouter() *router {
-    return &router{
-        roots: make(map[string]*node),
-        handlers: make(map[string]HandlerFunc)
-    }
-}
-
-func parsePattern(pattern string) []string {
-    vs := strings.Split(pattern, "/")
-
-    ps := make([]string, 0)
-    for _, item := range vs {
-        if item != "" {
-            ps = append(ps, item)
-            if item[0] == '*' {
-                break
-            }
-        }
-    }
-    return ps
-}
-
-func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {
-    // register router
-    // constains ':' or '*'
-    ps := parsePattern(pattern)
-
-    key := method + "-" + pattern
-    _, ok := r.roots[method]
-    if !ok {
-        r.roots[method] = &node{}
-    }
-    r.roots[method].insert(pattern, parts, 0)
-    r.handlers[key] = handler
-}
-
-func (r *router) getRoute(method string, path string) (*node, map[string]string) {
-    // search node
-    // not constains ':' and '*'
-    ps := parsePattern(pattern)
-    params = make(map[string]string)
-    root, ok := r.roots[method]
-
-    if !ok {
-        return nil, nil
-    }
-
-    n := root.search(ps, 0)
-
-    if n != nil {
-        parts := parsePattern(n.pattern)
-        for index, part := range parts {
-            if part[0] == ':' {
-                // :lang
-                //[1:]=lang
-                params[part[1:]] = ps[index]
-            }
-            if part[0] == '*' && len(part) > 1 {
-                // *filepath
-                // [1:]=filepath
-                params[part[1:]] = strings.Join(ps[index:], "/")
-                break
-            }
-        }
-        return n, params
-    }
-    return nil, nil
-}
-```
+		// router.go
+		package geew
+		
+		type router struct {
+		    roots map[string]*node
+		    handlers map[string]HandlerFunc
+		}
+		
+		func newRouter() *router {
+		    return &router{
+		        roots: make(map[string]*node),
+		        handlers: make(map[string]HandlerFunc)
+		    }
+		}
+		
+		func parsePattern(pattern string) []string {
+		    vs := strings.Split(pattern, "/")
+		
+		    ps := make([]string, 0)
+		    for _, item := range vs {
+		        if item != "" {
+		            ps = append(ps, item)
+		            if item[0] == '*' {
+		                break
+		            }
+		        }
+		    }
+		    return ps
+		}
+		
+		func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {
+		    // register router
+		    // constains ':' or '*'
+		    ps := parsePattern(pattern)
+		
+		    key := method + "-" + pattern
+		    _, ok := r.roots[method]
+		    if !ok {
+		        r.roots[method] = &node{}
+		    }
+		    r.roots[method].insert(pattern, parts, 0)
+		    r.handlers[key] = handler
+		}
+		
+		func (r *router) getRoute(method string, path string) (*node, map[string]string) {
+		    // search node
+		    // not constains ':' and '*'
+		    ps := parsePattern(pattern)
+		    params = make(map[string]string)
+		    root, ok := r.roots[method]
+		
+		    if !ok {
+		        return nil, nil
+		    }
+		
+		    n := root.search(ps, 0)
+		
+		    if n != nil {
+		        parts := parsePattern(n.pattern)
+		        for index, part := range parts {
+		            if part[0] == ':' {
+		                // :lang
+		                //[1:]=lang
+		                params[part[1:]] = ps[index]
+		            }
+		            if part[0] == '*' && len(part) > 1 {
+		                // *filepath
+		                // [1:]=filepath
+		                params[part[1:]] = strings.Join(ps[index:], "/")
+		                break
+		            }
+		        }
+		        return n, params
+		    }
+		    return nil, nil
+		}
 
 ## context变化
 
 &emsp;&emsp;在HandlerFunc中，希望能够访问到解析的参数，因此需要对context对象增加一个属性和方法来提供对路由参数(Restful)的访问。我们将解析后的参数存储到`Params`中，通过`c.Param("xxx")`的方式获取对应的值。
 
-```
-// context.go
-package geew
-
-type Context struct {
-    Writer http.ResponseWriter
-    Req *http.Request
-    Path string
-    Method string
-    Params map[string]string
-    StatusCode int
-}
-
-func (c *Context) Param(key string) string {
-    value, _ := c.Params[key]
-    return value
-}
-```
+		// context.go
+		package geew
+		
+		type Context struct {
+		    Writer http.ResponseWriter
+		    Req *http.Request
+		    Path string
+		    Method string
+		    Params map[string]string
+		    StatusCode int
+		}
+		
+		func (c *Context) Param(key string) string {
+		    value, _ := c.Params[key]
+		    return value
+		}
 
 ## router变化
 
 &emsp;&emsp;router胡变化比较小，比较重要的一点是，在调用匹配到的handler前，将解析出来的路由参数赋值给Params.
 
-```
-// router.go
-package geew
-
-func (r *router) handle(c *Context) {
-    n, params := r.getRoute(c.Method, c.Path)
-    if n != nil {
-        c.Params = params
-        key := c.Method + "-" + n.pattern
-        r.handlers[key](c)
-    } else {
-        c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
-    }
-}
-```
+		// router.go
+		package geew
+		
+		func (r *router) handle(c *Context) {
+		    n, params := r.getRoute(c.Method, c.Path)
+		    if n != nil {
+		        c.Params = params
+		        key := c.Method + "-" + n.pattern
+		        r.handlers[key](c)
+		    } else {
+		        c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
+		    }
+		}
 
 ## 测试
 
-```
-// router_test.go
-package geew
-
-func TestParsePattern(t *testing.T) {
-    ok := reflect.DeepEqual(parsePattern("/p/:name"), []string{"p", ":name"})
-	ok = ok && reflect.DeepEqual(parsePattern("/p/*"), []string{"p", "*"})
-	ok = ok && reflect.DeepEqual(parsePattern("/p/*name/*"), []string{"p", "*name"})
-	if !ok {
-		t.Fatal("test parsePattern failed")
-	}
-}
-
-func newTestRouter() *router {
-	r := newRouter()
-	r.addRoute("GET", "/", nil)
-	r.addRoute("GET", "/hello/:name", nil)
-	r.addRoute("GET", "/hello/b/c", nil)
-	r.addRoute("GET", "/hi/:name", nil)
-	r.addRoute("GET", "/assets/*filepath", nil)
-	return r
-}
-
-func TestGetRoute(t *testing.T) {
-	r := newTestRouter()
-	n, ps := r.getRoute("GET", "/hello/geew")
-
-	if n == nil {
-		t.Fatal("nil shouldn't be returned")
-	}
-
-	if n.pattern != "/hello/:name" {
-		t.Fatal("should match /hello/:name")
-	}
-
-	if ps["name"] != "geew" {
-		t.Fatal("name should be equal to 'geew'")
-	}
-
-	fmt.Printf("matched path: %s, params['name']: %s\n", n.pattern, ps["name"])
-
-}
-```
+		// router_test.go
+		package geew
+		
+		func TestParsePattern(t *testing.T) {
+		    ok := reflect.DeepEqual(parsePattern("/p/:name"), []string{"p", ":name"})
+			ok = ok && reflect.DeepEqual(parsePattern("/p/*"), []string{"p", "*"})
+			ok = ok && reflect.DeepEqual(parsePattern("/p/*name/*"), []string{"p", "*name"})
+			if !ok {
+				t.Fatal("test parsePattern failed")
+			}
+		}
+		
+		func newTestRouter() *router {
+			r := newRouter()
+			r.addRoute("GET", "/", nil)
+			r.addRoute("GET", "/hello/:name", nil)
+			r.addRoute("GET", "/hello/b/c", nil)
+			r.addRoute("GET", "/hi/:name", nil)
+			r.addRoute("GET", "/assets/*filepath", nil)
+			return r
+		}
+		
+		func TestGetRoute(t *testing.T) {
+			r := newTestRouter()
+			n, ps := r.getRoute("GET", "/hello/geew")
+		
+			if n == nil {
+				t.Fatal("nil shouldn't be returned")
+			}
+		
+			if n.pattern != "/hello/:name" {
+				t.Fatal("should match /hello/:name")
+			}
+		
+			if ps["name"] != "geew" {
+				t.Fatal("name should be equal to 'geew'")
+			}
+		
+			fmt.Printf("matched path: %s, params['name']: %s\n", n.pattern, ps["name"])
+		
+		}

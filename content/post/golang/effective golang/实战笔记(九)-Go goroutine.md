@@ -39,26 +39,24 @@ go语言中并发指的是让某个函数独立于其它函数运行的能力，
 
 go的并发原理我们刚刚讲了，那么go的并行是怎样的呢？其实答案非常简单，多创建一个逻辑处理器就好了，这样调度器就可以同时分配全局运行队列中的goroutine到不同的逻辑处理器上并行执行。
 
-```
-func main(){
-    var wg sync.WaitGroup
-    wg.Add(2)
-    go func(){
-        defer wg.Done()
-        for i:=1;i<100;i++{
-            fmt.Println("A:",i)
-        }
-    }()
-   
-go func(){
-        defer wg.Done()
-        for i:=1;i<100;i++{
-            fmt.Println("B:",i)
-        }
-    }()
-wg.Wait()
-}
-```
+		func main(){
+		    var wg sync.WaitGroup
+		    wg.Add(2)
+		    go func(){
+		        defer wg.Done()
+		        for i:=1;i<100;i++{
+		            fmt.Println("A:",i)
+		        }
+		    }()
+		   
+		go func(){
+		        defer wg.Done()
+		        for i:=1;i<100;i++{
+		            fmt.Println("B:",i)
+		        }
+		    }()
+		wg.Wait()
+		}
 这是一个简单的并发程序。创建一个goroutine是通过go关键字的，其后跟一个函数或者方法即可。
 
 这里的sync.WaitGroup其实是一个计数的信号量，使用它的目的是要main函数等待两个goroutine执行完成后再结束，不然这两个goroutine还在运行的时候，程序就结束了，看不到想要的结果。
@@ -69,33 +67,29 @@ sync.WaitGroup的使用也非常简单，先是使用add方法设置计算器为
 
 默认情况下，go默认是给每个可用的物理处理器都分配一个逻辑处理器，因为我的电脑是4核的，所以上面的例子默认创建了4个逻辑处理器，所以这个例子中同时也有并行的调度，如果我们强制只使用一个逻辑处理器，我们再看看结果。
 
-```
-func main(){
-    runtime.GOMAXPROCS(1)
-    var wg sync.WaitGroup
-    wg.Add(2)
-    go func(){
-        defer wg.Done()
-        for i := 1; i < 100; i++ {
-            fmt.Println("A:", i)
-        }
-    }()
-    go func(){
-        defer wg.Done()
-        for i := 1; i < 100; i++ {
-            fmt.Println("B", i)
-        }
-    }()
-    wg.Wait() 
-}
-```
+		func main(){
+		    runtime.GOMAXPROCS(1)
+		    var wg sync.WaitGroup
+		    wg.Add(2)
+		    go func(){
+		        defer wg.Done()
+		        for i := 1; i < 100; i++ {
+		            fmt.Println("A:", i)
+		        }
+		    }()
+		    go func(){
+		        defer wg.Done()
+		        for i := 1; i < 100; i++ {
+		            fmt.Println("B", i)
+		        }
+		    }()
+		    wg.Wait() 
+		}
 设置逻辑处理器个数也非常简单，在程序开头使用`runtime.GOMAXPROCS(1)`即可，这里设置的数量是1.我们这时候再运行，会发现打印A，再打印B。
 
 这里我们不要误认为是顺序执行，这里之所以顺序输出的原因，是因为我们的goroutine执行时间太短，还没来得及切换到第2个goroutine，第一个goroutine就完成了。这里我们可以把每个goroutine的执行时间拉长一些，就可以看到并发的效果了。
 
 对于逻辑处理器的个数，不是越多越好，要根据电脑的实际物理核数，如果不是多核的，设置再多的逻辑处理器个数也没用，如果要设置的话，一般我们采用如下代码设置。
 
-```
-runtime.GOMAXPROCS(runtime.NumCPU())
-```
+		runtime.GOMAXPROCS(runtime.NumCPU())
 **`所以对于并发来说，就是go语言自己实现的调度，对于并行来说，是和运行的电脑的物理处理器的核数有关，多核就可以并行并发，单核只能并发了。`**

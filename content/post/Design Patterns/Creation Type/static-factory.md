@@ -20,38 +20,38 @@ author: "java-my-life"
 > 案例
 
 - `login.interface`
-```
-public interface Login {
-    boolean verify(String name,String password);
-}
-```
-- `DomainLogin`
-```
-public class DomainLogin implements Login {
-    public boolean verify(String name, String password) {
-        return true;
-    }
-}
-```
-- `PasswordLogin`
-```
-public class PasswordLogin implements Login {
-    public boolean verify(String name, String password) {
-        return true;
-    }
-}
-```
-- `LoginManager`
-```
-public class LoginManager{
-    public static Login factory(String type){
-        if(type.equals("password")){
-            return new PasswordLogin();
-        }else if(type.equals("passcode")){
-            return new DomainLogin();
-        }else{
-            throw new RuntimeException();
+
+        public interface Login {
+            boolean verify(String name,String password);
         }
-    }
-}
-```
+
+- `DomainLogin`
+
+        public class DomainLogin implements Login {
+            public boolean verify(String name, String password) {
+                return true;
+            }
+        }
+
+- `PasswordLogin`
+
+        public class PasswordLogin implements Login {
+            public boolean verify(String name, String password) {
+                return true;
+            }
+        }
+
+- `LoginManager`
+
+        public class LoginManager{
+            public static Login factory(String type){
+                if(type.equals("password")){
+                    return new PasswordLogin();
+                }else if(type.equals("passcode")){
+                    return new DomainLogin();
+                }else{
+                    throw new RuntimeException();
+                }
+            }
+        }
+

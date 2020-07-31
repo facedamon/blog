@@ -52,34 +52,34 @@ author: "java-my-life"
 > 案例
 
 - `Prototype.Interface`
-```
-public interface Prototype{
-    public Object clone();
-}
-```
+
+        public interface Prototype{
+            public Object clone();
+        }
+
 - `ConcretePrototype`
-```
-public class ConcretePrototype implements Prototype{
-    public Prototype clone(){
-        Prototype prototype = new ConcretePrototype();
-        return prototype;
-    }
-}
-```
+
+        public class ConcretePrototype implements Prototype{
+            public Prototype clone(){
+                Prototype prototype = new ConcretePrototype();
+                return prototype;
+            }
+        }
+
 - `Client`
-```
-public class Client{
-    private Prototype prototype;
-    
-    public Client(Prototype prototype){
-        this.prototype = prototype;
-    }
-    
-    public void opertation(Prototype example){
-        Prototype copy = prototype.clone();
-    }
-}
-```
+
+        public class Client{
+            private Prototype prototype;
+            
+            public Client(Prototype prototype){
+                this.prototype = prototype;
+            }
+            
+            public void opertation(Prototype example){
+                Prototype copy = prototype.clone();
+            }
+        }
+
 > 浅克隆&深克隆
 
 - Object类提供protected Object clone()方法对对象进行复制.当使用Object类的clone()方法来复制一个对象时，此对象对其他对象也同时会被复制一份
@@ -94,17 +94,17 @@ public class Client{
 
 - 利用序列化实现深度克隆:把对象写到流里的过程是序列化(Serialzation)过程;而把对象从流中读出来的过程则叫反序列化(Deserialzation)过程.应当指出的是,写到流里的是对象的一个拷贝,而原对象仍然存在于JVM里面
 
-```
-public Object deepClone() throws IOException,ClassNotFoundException{
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    ObjectOutputStream oos = new ObjectOutputStram(bos);
-    oos.writeObject(this);
-    
-    ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    ObjectInputStream ois = new ObjectInputStream(bis);
-    return ois.readObject();
-}
-```
+
+        public Object deepClone() throws IOException,ClassNotFoundException{
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStram(bos);
+            oos.writeObject(this);
+            
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            return ois.readObject();
+        }
+
 
 - 浅度克隆显然比深度克隆更容易实现,因为Java语言的所有类都会继承一个clone方法,而这个clone所做的正式浅度克隆.有一些对象,比如Thread或者Socket对象，是不能简单复制或共享的.不管是使用浅度克隆还是深度克隆,只要设计这样的间接对象,就必须把见解对象设置成transient而不予复制;或者由程序自行创建出相当的同种对象,权且当作复制使用
 
@@ -119,90 +119,89 @@ public Object deepClone() throws IOException,ClassNotFoundException{
 > 案例2代码
 
 - `Abstract Shape`
-```
-public abstract class Shape Implements Cloneable{
-    @Setter
-    @Getter
-    private String id;
-    
-    @Getter
-    @Construct
-    private String type;
-    
-    @Override
-    public Object clone(){
-        Object clone = null;
-        try{
-            clone = super.clone();
-        }catch(CloneNotSupportedException e){
-            e.printStackTrace();
+
+        public abstract class Shape Implements Cloneable{
+            @Setter
+            @Getter
+            private String id;
+            
+            @Getter
+            @Construct
+            private String type;
+            
+            @Override
+            public Object clone(){
+                Object clone = null;
+                try{
+                    clone = super.clone();
+                }catch(CloneNotSupportedException e){
+                    e.printStackTrace();
+                }
+                return clone;
+            }
         }
-        return clone;
-    }
-}
-```
+
 - `Rectangle`
-```
-pulic class Rectangle extends Shape{
-    public Rectangle(){
-        type = "Rectangle";
-    }
-    
-    @Override
-    public void draw(){
-        log.info("Inside Rectangle:draw() method.");
-    }
-}
-```
+
+        pulic class Rectangle extends Shape{
+            public Rectangle(){
+                type = "Rectangle";
+            }
+            
+            @Override
+            public void draw(){
+                log.info("Inside Rectangle:draw() method.");
+            }
+        }
+
 - `Square`
-```
-public class Square extenda Shape{
-    public Square(){
-        type = "Square";
-    }
-    
-    @Override
-    public void draw(){
-        log.info("Inside Square::draw() method.");
-    }
-}
-```
+
+        public class Square extenda Shape{
+            public Square(){
+                type = "Square";
+            }
+            
+            @Override
+            public void draw(){
+                log.info("Inside Square::draw() method.");
+            }
+        }
+
 - `Circle`
-```
-public class Circle extends Shape{
-    public Circle(){
-        type = "Circle";
-    }
-    
-    @Override
-    public void draw(){
-        log.info("Inside Circle::draw() method.");
-    }
-}
-```
+
+        public class Circle extends Shape{
+            public Circle(){
+                type = "Circle";
+            }
+            
+            @Override
+            public void draw(){
+                log.info("Inside Circle::draw() method.");
+            }
+        }
+
 - `ShapeCache`
-```
-public class ShapeCache{
-    private static Hashtable<String,Shape> shapeMap = new Hashtable();
-    
-    public static Shape getShape (String shapeId){
-        Shape cachedShape = shapeMap.get(shapeId);
-        return (Shape) cachedShape.clone();
-    }
-    
-    public static void loadCache(){
-        Circle circle = new Circle();
-        circle.setId("1");
-        shapeMap.put(circle.getId,circle);
-        
-        Square square = new Square();
-        square.setId("2");
-        shapeMap.put(square.getId(),square);
-        
-        Rectangle rectangle = new Rectangle();
-        rectabgle.setId("3");
-        shapeMap.put(rectangle.getId(),rectangle);
-    }
-    
-}
-```
+
+        public class ShapeCache{
+            private static Hashtable<String,Shape> shapeMap = new Hashtable();
+            
+            public static Shape getShape (String shapeId){
+                Shape cachedShape = shapeMap.get(shapeId);
+                return (Shape) cachedShape.clone();
+            }
+            
+            public static void loadCache(){
+                Circle circle = new Circle();
+                circle.setId("1");
+                shapeMap.put(circle.getId,circle);
+                
+                Square square = new Square();
+                square.setId("2");
+                shapeMap.put(square.getId(),square);
+                
+                Rectangle rectangle = new Rectangle();
+                rectabgle.setId("3");
+                shapeMap.put(rectangle.getId(),rectangle);
+            }
+            
+        }

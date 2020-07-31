@@ -25,62 +25,62 @@ author: "java-my-life"
 - Left(树叶构件):树叶对象是没有下级子对象,定义出参加组合的原始对象的行为.
 - Composite(树枝构件):代表参加组合的有下级子对象.树枝构件类给出所有的管理子对象的方法.
 
-```
-public interface Component{
-    public void printStruct(String preStr);
-}
-```
 
-```
-public class Composite implements Component{
-    private List<Component> childComponents = new ArrayList<Component>();
-    
-    private String name;
-    
-    public Composite(String name){
-        this.name = name;
-    }
-    
-    public void addChild(Component child){
-        childComponents.add(child);
-    }
-    
-    public void removeChild(int index){
-        childComponents.remove(index);
-    }
-    
-    public List<Component> getChild(){
-        return childComponents;
-    }
-    
-    @Override
-    public void printStruct(String preStr){
-        log.info(preStr + "+" + this.name);
-        if (this.childComponents != null){
-            preStr += " ";
-            for (Component c : childComponents){
-                //递归输出每个子对象
-                c.printStruct(preStr);
+        public interface Component{
+            public void printStruct(String preStr);
+        }
+
+
+
+        public class Composite implements Component{
+            private List<Component> childComponents = new ArrayList<Component>();
+            
+            private String name;
+            
+            public Composite(String name){
+                this.name = name;
+            }
+            
+            public void addChild(Component child){
+                childComponents.add(child);
+            }
+            
+            public void removeChild(int index){
+                childComponents.remove(index);
+            }
+            
+            public List<Component> getChild(){
+                return childComponents;
+            }
+            
+            @Override
+            public void printStruct(String preStr){
+                log.info(preStr + "+" + this.name);
+                if (this.childComponents != null){
+                    preStr += " ";
+                    for (Component c : childComponents){
+                        //递归输出每个子对象
+                        c.printStruct(preStr);
+                    }
+                }
             }
         }
-    }
-}
-```
 
-```
-public class Leaf implements Component{
-    private String name;
-    
-    public Leaf(String name){
-        this.name = name;
-    }
-    
-    @Override
-    public void printStruct(String preStr) {
-        System.out.println(preStr + "-" + name);
-    }
-}
-```
+
+
+        public class Leaf implements Component{
+            private String name;
+            
+            public Leaf(String name){
+                this.name = name;
+            }
+            
+            @Override
+            public void printStruct(String preStr) {
+                System.out.println(preStr + "-" + name);
+            }
+        }
+
 
 - 可以看出,Composite给出了add,remove,get等方法的声明和实现,而Leaf构件类则没有给出这些方法或实现.这样的做法是安全的做法,由于这个特点,客户端应用程序不可能错误地调用树叶构件的聚集方法,因为树叶构件没有这些方法,调用会导致编译错误
 
@@ -88,69 +88,69 @@ public class Leaf implements Component{
 
 
 
-```
-public abstract class Component{
-    public abstract void printStruct(String preStr);
-}
 
-public void addChild(Component child){
-    throw new UnsupportedOperationException("对象不支持此操作");
-}
+        public abstract class Component{
+            public abstract void printStruct(String preStr);
+        }
 
-public void removeChild(int index){
-    throw new UnsupportedOperationException("对象不支持此操作");
-}
+        public void addChild(Component child){
+            throw new UnsupportedOperationException("对象不支持此操作");
+        }
 
-public List<Component> getChild(){
-    throw new UnsupportedOperationException("对象不支持此操作");
-}
-```
-```
-public class Composite extends Component{
-    private List<Component> childComponents = new ArraysList<Component>();
-    
-    private String name;
-    public Composite(String name){
-        this.name = name;
-    }
-    
-    public void addChild(Component child){
-        childComponents.add(child);
-    }
-    
-    public void removeChild(int index){
-        childComponents.remove(index);
-    }
-    
-    public List<Component> getChild(){
-        return childComponents;
-    }
-    
-    @Override
-    public void printStruct(String preStr){
-        log.info(preStr + "+" + this.name);
-        if (this.childComponents != null){
-            preStr += " ";
-            for (Component c : childComponents){
-                c.printStruct(preStr);
+        public void removeChild(int index){
+            throw new UnsupportedOperationException("对象不支持此操作");
+        }
+
+        public List<Component> getChild(){
+            throw new UnsupportedOperationException("对象不支持此操作");
+        }
+
+
+        public class Composite extends Component{
+            private List<Component> childComponents = new ArraysList<Component>();
+            
+            private String name;
+            public Composite(String name){
+                this.name = name;
+            }
+            
+            public void addChild(Component child){
+                childComponents.add(child);
+            }
+            
+            public void removeChild(int index){
+                childComponents.remove(index);
+            }
+            
+            public List<Component> getChild(){
+                return childComponents;
+            }
+            
+            @Override
+            public void printStruct(String preStr){
+                log.info(preStr + "+" + this.name);
+                if (this.childComponents != null){
+                    preStr += " ";
+                    for (Component c : childComponents){
+                        c.printStruct(preStr);
+                    }
+                }
             }
         }
-    }
-}
-```
-```
-public class Leaf extends Component{
-    private String name;
-    public Leaf(String name){
-        this.name = name;
-    }
-    
-    @Override
-    public void printStruct(String preStr){
-        log.info(preStr + "-" + name);
-    }
-}
-```
+
+
+        public class Leaf extends Component{
+            private String name;
+            public Leaf(String name){
+                this.name = name;
+            }
+            
+            @Override
+            public void printStruct(String preStr){
+                log.info(preStr + "-" + name);
+            }
+        }
+
 > 区别
 
 - 这里所说的安全性合成模式是指：从客户端使用合成模式上看是不再安全,如果是安全的,那么就不会发生误操作的可能,能访问的方法都是被支持的.

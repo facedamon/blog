@@ -28,11 +28,11 @@ author: "java-my-life"
 - **双重检查加锁为什么要使用volatile?**
 1. 如果不适用volatile关键词看起来似乎很完美，但这是一个错误的优化，在线程执行到第一次检查位置时读取到instance不为null，此时**instance引用的对象有可能还没有完成初始化**
 2. 问题根源：在于第15行代码(instance = new Singleton();)创建一个对象可以分解为如下三个伪代码：
-```
+
     2.1 memory = allocate();//分配对象的内存空间
     2.2 ctorInsatnce(memory);//初始化对象
     2.3 instance = memory;//设置instance指向刚分配的内存地址
-```
+
 3. 上面三行伪代码中的2和3之间，可能会被`指令重排序`。当声明对象的引用为volatile后，问题根源的三行伪代码中的2和3之间的重排序，在多线程环境中将会被禁止。
 
 - **不禁止指令重排序Lazy initialization holder class模式：**
@@ -52,79 +52,79 @@ author: "java-my-life"
 > 案例
 
 - `EagerSingleton`
-```
-public class EagerSingleton{
-    private static EagerSingleton instance = new EagerSingleton();
-    
-    private EagerSingleton(){}
-    
-    public static EagerSingleton getInstance(){
-        return instance;
-    }
-```
-- `LazySingleton`
-```
-public class LazySingleton{
-    private static LazySingleton instance = null;
-    private LazySingleton(){}
-    
-    public static sychronized LazySingelton getInstance(){
-        if(instace == null){
-            instance = new LazySingleton();
-        }
-        return instance;
-    }
-}
-```
-- `DoubleSync`
-```
-public class Singleton(){
-    private volatile static Singleton instance = null;
-    private Singleton(){}
-    
-    public static Singleton getInstance(){
-        /**
-        *先检查实例是否存在，如果不存在才进入下面的同步块
-        */
-        if(null == instance){
-            synchronized (Singelton.class){
-                /**
-                *再次检查实例是否存在，如果不存在才真正的创建实例
-                */
-                if(null == instance){
-                    instance = new Singleton();
-                }
+
+        public class EagerSingleton{
+            private static EagerSingleton instance = new EagerSingleton();
+            
+            private EagerSingleton(){}
+            
+            public static EagerSingleton getInstance(){
+                return instance;
             }
         }
-        return instance;
-    }
-}
-```
+
+- `LazySingleton`
+
+        public class LazySingleton{
+            private static LazySingleton instance = null;
+            private LazySingleton(){}
+            
+            public static sychronized LazySingelton getInstance(){
+                if(instace == null){
+                    instance = new LazySingleton();
+                }
+                return instance;
+            }
+        }
+
+- `DoubleSync`
+
+        public class Singleton(){
+            private volatile static Singleton instance = null;
+            private Singleton(){}
+            
+            public static Singleton getInstance(){
+                /**
+                *先检查实例是否存在，如果不存在才进入下面的同步块
+                */
+                if(null == instance){
+                    synchronized (Singelton.class){
+                        /**
+                        *再次检查实例是否存在，如果不存在才真正的创建实例
+                        */
+                        if(null == instance){
+                            instance = new Singleton();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+
 
 - `InnerClass`
-```
-public class Singleton(){
-    private Singleton(){}
-    
-    /**
-    * 类级内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例没有绑定关系，而且只有被调用到时才会装载，从而实现延迟加载
-    */
-    private static class SingletonHolder{
-        private static Singleton instance = new Singleton();//JVM来保证线程安全
-    }
-    
-    public static Singleton getInstance(){
-        return SingletonHolder.instance;
-    }
-}
-```
+
+        public class Singleton(){
+            private Singleton(){}
+            
+            /**
+            * 类级内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例没有绑定关系，而且只有被调用到时才会装载，从而实现延迟加载
+            */
+            private static class SingletonHolder{
+                private static Singleton instance = new Singleton();//JVM来保证线程安全
+            }
+            
+            public static Singleton getInstance(){
+                return SingletonHolder.instance;
+            }
+        }
+
 - `Enum`
-```
-public enum Singleton{
-    uniqueInstance;
-    
-    public void singletonOperation(){
-        //TODO
-    }
-}
-```
+
+        public enum Singleton{
+            uniqueInstance;
+            
+            public void singletonOperation(){
+                //TODO
+            }
+        }

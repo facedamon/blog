@@ -25,55 +25,55 @@ author: "java-my-life"
 - `Strategy(抽象策略角色)`:这是一个抽象角色,通常由一个接口或这抽象类实现.此角色给出所有的具体策略类所需要的接口
 - `ConcreteStrategy(具体策略角色)`:包装了相关的算法或行为
 
-```
-public class Context {
-    //持有一个具体策略的对象
-    private Strategy strategy;
-    /**
-     * 构造函数，传入一个具体策略对象
-     * @param strategy 具体策略对象
-     */
-    public Context(Strategy strategy){
-        this.strategy = strategy;
-    }
-    /**
-     * 策略方法
-     */
-    public void contextInterface(){
-        
-        strategy.strategyInterface();
-    }
-    
-}
-```
-```
-public interface Strategy {
-    /**
-     * 策略方法
-     */
-    public void strategyInterface();
-}
-```
-```
-public class ConcreteStrategyA implements Strategy {
 
-    @Override
-    public void strategyInterface() {
-        //相关的业务
-    }
+        public class Context {
+            //持有一个具体策略的对象
+            private Strategy strategy;
+            /**
+            * 构造函数，传入一个具体策略对象
+            * @param strategy 具体策略对象
+            */
+            public Context(Strategy strategy){
+                this.strategy = strategy;
+            }
+            /**
+            * 策略方法
+            */
+            public void contextInterface(){
+                
+                strategy.strategyInterface();
+            }
+            
+        }
 
-}
-```
-```
-public class ConcreteStrategyB implements Strategy {
 
-    @Override
-    public void strategyInterface() {
-        //相关的业务
-    }
+        public interface Strategy {
+            /**
+            * 策略方法
+            */
+            public void strategyInterface();
+        }
 
-}
-```
+
+        public class ConcreteStrategyA implements Strategy {
+
+            @Override
+            public void strategyInterface() {
+                //相关的业务
+            }
+
+        }
+
+
+        public class ConcreteStrategyB implements Strategy {
+
+            @Override
+            public void strategyInterface() {
+                //相关的业务
+            }
+
+        }
+
 
 > 案例
 
@@ -89,92 +89,92 @@ public class ConcreteStrategyB implements Strategy {
 
 ![avatat](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/strategy/案例图.png)
 
-```
-public interface MemberStrategy {
-    /**
-     * 计算图书的价格
-     * @param booksPrice 图书的原价
-     * @return 计算出打折后的价格
-     */
-    public double calcPrice(double booksPrice);
-}
-```
 
-```
-public class PrimaryMemberStrategy implements MemberStrategy {
+        public interface MemberStrategy {
+            /**
+            * 计算图书的价格
+            * @param booksPrice 图书的原价
+            * @return 计算出打折后的价格
+            */
+            public double calcPrice(double booksPrice);
+        }
 
-    @Override
-    public double calcPrice(double booksPrice) {
-        
-        System.out.println("对于初级会员的没有折扣");
-        return booksPrice;
-    }
 
-}
-```
 
-```
-public class IntermediateMemberStrategy implements MemberStrategy {
+        public class PrimaryMemberStrategy implements MemberStrategy {
 
-    @Override
-    public double calcPrice(double booksPrice) {
+            @Override
+            public double calcPrice(double booksPrice) {
+                
+                System.out.println("对于初级会员的没有折扣");
+                return booksPrice;
+            }
 
-        System.out.println("对于中级会员的折扣为10%");
-        return booksPrice * 0.9;
-    }
+        }
 
-}
-```
 
-```
-public class AdvancedMemberStrategy implements MemberStrategy {
 
-    @Override
-    public double calcPrice(double booksPrice) {
-        
-        System.out.println("对于高级会员的折扣为20%");
-        return booksPrice * 0.8;
-    }
-}
-```
+        public class IntermediateMemberStrategy implements MemberStrategy {
 
-```
-public class Price {
-    //持有一个具体的策略对象
-    private MemberStrategy strategy;
-    /**
-     * 构造函数，传入一个具体的策略对象
-     * @param strategy 具体的策略对象
-     */
-    public Price(MemberStrategy strategy){
-        this.strategy = strategy;
-    }
-    
-    /**
-     * 计算图书的价格
-     * @param booksPrice 图书的原价
-     * @return 计算出打折后的价格
-     */
-    public double quote(double booksPrice){
-        return this.strategy.calcPrice(booksPrice);
-    }
-}
-```
-```
-public class Client {
+            @Override
+            public double calcPrice(double booksPrice) {
 
-    public static void main(String[] args) {
-        //选择并创建需要使用的策略对象
-        MemberStrategy strategy = new AdvancedMemberStrategy();
-        //创建环境
-        Price price = new Price(strategy);
-        //计算价格
-        double quote = price.quote(300);
-        System.out.println("图书的最终价格为：" + quote);
-    }
+                System.out.println("对于中级会员的折扣为10%");
+                return booksPrice * 0.9;
+            }
 
-}
-```
+        }
+
+
+
+        public class AdvancedMemberStrategy implements MemberStrategy {
+
+            @Override
+            public double calcPrice(double booksPrice) {
+                
+                System.out.println("对于高级会员的折扣为20%");
+                return booksPrice * 0.8;
+            }
+        }
+
+
+
+        public class Price {
+            //持有一个具体的策略对象
+            private MemberStrategy strategy;
+            /**
+            * 构造函数，传入一个具体的策略对象
+            * @param strategy 具体的策略对象
+            */
+            public Price(MemberStrategy strategy){
+                this.strategy = strategy;
+            }
+            
+            /**
+            * 计算图书的价格
+            * @param booksPrice 图书的原价
+            * @return 计算出打折后的价格
+            */
+            public double quote(double booksPrice){
+                return this.strategy.calcPrice(booksPrice);
+            }
+        }
+
+
+        public class Client {
+
+            public static void main(String[] args) {
+                //选择并创建需要使用的策略对象
+                MemberStrategy strategy = new AdvancedMemberStrategy();
+                //创建环境
+                Price price = new Price(strategy);
+                //计算价格
+                double quote = price.quote(300);
+                System.out.println("图书的最终价格为：" + quote);
+            }
+
+        }
+
 
 > 总结
 
