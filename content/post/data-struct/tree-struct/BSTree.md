@@ -118,26 +118,25 @@ $$
 # 二叉查找树的Java实现
 ## 二叉查找树结点的定义
 
-```
-public class BSTree<T extends Comparable<T>> {
+        public class BSTree<T extends Comparable<T>> {
 
-    private BSTNode<T> mRoot;   //根结点
+            private BSTNode<T> mRoot;   //根结点
 
-    public class BSTNode<T extends Comparable<T>> {
-        T key;              // 键值
-        BSTNode<T> left;    // 左结点
-        BSTNode<T> right;   //右结点
-        BSTNode<T> parent;  //父结点
+            public class BSTNode<T extends Comparable<T>> {
+                T key;              // 键值
+                BSTNode<T> left;    // 左结点
+                BSTNode<T> right;   //右结点
+                BSTNode<T> parent;  //父结点
 
-        public BSTNode(T key, BSTNode<T> parent, BSTNode<T> left, BSTNode<T> right) {
-            this.key = key;
-            this.parent = parent;
-            this.left = left;
-            this.right = right;
+                public BSTNode(T key, BSTNode<T> parent, BSTNode<T> left, BSTNode<T> right) {
+                    this.key = key;
+                    this.parent = parent;
+                    this.left = left;
+                    this.right = right;
+                }
+            }
         }
-    }
-}
-```
+
 &emsp;&emsp;BSTree是二叉树，它保护了二叉树的根结点mRoot；mRoot是BSTNode类型，而BSTNode是二叉查找树的结点，它是BSTree的内部类。BSTNode包含二叉查找树的几个基本信息：
 1. key -- 关键字，是用来对二叉查找树的结点进行排序的。
 2. left -- 它指向当前结点的左孩子。
@@ -152,19 +151,19 @@ public class BSTree<T extends Comparable<T>> {
 2. 先序遍历左子树；
 3. 先序遍历右子树；
 
-```
-private void preOrder(BSTNode<T> tree){
-    if (null != tree) {
-        sysout(tree.key+" ");
-        preOrder(tree.left);
-        preOrder(tree.right);
-    }
-}
 
-public void preOrder(){
-    preOrder(mRoot);
-}
-```
+        private void preOrder(BSTNode<T> tree){
+            if (null != tree) {
+                sysout(tree.key+" ");
+                preOrder(tree.left);
+                preOrder(tree.right);
+            }
+        }
+
+        public void preOrder(){
+            preOrder(mRoot);
+        }
+
 
 ### 中序遍历(中根遍历)
 &emsp;&emsp;若二叉树非空，则执行以下操作：
@@ -172,19 +171,19 @@ public void preOrder(){
 2. 访问根结点；
 3. 中序遍历右子树。
 
-```
-private void inOrder(BSTNode<T> tree){
-    if (null != tree) {
-        inOrder(tree.left);
-        sysout(tree.key+" ");
-        inOrder(tree.right);
-    }
-}
 
-public void inOrder() {
-    inOrder(mRoot);
-}
-```
+        private void inOrder(BSTNode<T> tree){
+            if (null != tree) {
+                inOrder(tree.left);
+                sysout(tree.key+" ");
+                inOrder(tree.right);
+            }
+        }
+
+        public void inOrder() {
+            inOrder(mRoot);
+        }
+
 
 ### 后序遍历(后根遍历)
 &emsp;&emsp;若二叉树非空，则执行以下操作：
@@ -192,19 +191,20 @@ public void inOrder() {
 2. 后序遍历右子树；
 3. 访问根结点
 
-```
-private void postOrder(BSTNode<T> tree) {
-    if (null != tree) {
-        postOrder(tree.left);
-        postOrder(tree.right);
-        sysout(tree.key+" ");
-    }
-}
 
-public void postOrder() {
-    postOrder(mRoot);
-}
-```
+        private void postOrder(BSTNode<T> tree) {
+            if (null != tree) {
+                postOrder(tree.left);
+                postOrder(tree.right);
+                sysout(tree.key+" ");
+            }
+        }
+
+        public void postOrder() {
+            postOrder(mRoot);
+        }
+
+
 > 看看下面这棵树的各种遍历方式：
 
 ![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/data-struct/tree/BSTree/遍历示例.jpg)
@@ -216,92 +216,94 @@ public void postOrder() {
 
 ## 查找
 ### 递归版本的代码
-```
-private BSTNode<T> search(BSTNode<T> x, T key) {
-    if (null == x) {
-        return x;
-    }
-    int cmp = key.compareTo(x.key);
-    if (cmp < 0) {
-        return search(x.left, key);
-    }
-    if (cmp > 0) {
-        return search(x.right, key);
-    }
-    return x;
-}
 
-public BSTNode<T search(T key) {
-    return search(mRoot, key);
-}
-```
 
-### 非递归版本的代码
-```
-private BSTNode<T iterativeSearch(BSTNode<T> x, T key) {
-    while (null != x) {
-        int cmp = key.compareTo(x.key);
-
-        if (cmp < 0){
-            x = x.left;
-        }else if (cmp > 0) {
-            x = x.right;
-        }else {
+        private BSTNode<T> search(BSTNode<T> x, T key) {
+            if (null == x) {
+                return x;
+            }
+            int cmp = key.compareTo(x.key);
+            if (cmp < 0) {
+                return search(x.left, key);
+            }
+            if (cmp > 0) {
+                return search(x.right, key);
+            }
             return x;
         }
-    }
-    return x;
-}
 
-public BSTNode<T> iterativeSearch(T key) {
-    return iterativeSearch(mRoot, key);
-}
-```
+        public BSTNode<T search(T key) {
+            return search(mRoot, key);
+        }
+
+
+### 非递归版本的代码
+
+
+        private BSTNode<T iterativeSearch(BSTNode<T> x, T key) {
+            while (null != x) {
+                int cmp = key.compareTo(x.key);
+
+                if (cmp < 0){
+                    x = x.left;
+                }else if (cmp > 0) {
+                    x = x.right;
+                }else {
+                    return x;
+                }
+            }
+            return x;
+        }
+
+        public BSTNode<T> iterativeSearch(T key) {
+            return iterativeSearch(mRoot, key);
+        }
+
 
 ## 最大值和最小值
 ### 查找最大值的代码
 
-```
-private BSTNode<T> maximum(BSTNode<T> tree) {
-    if (null == tree) {
-        return null;
-    }
-    while(null != tree.right) {
-        tree = tree.right;
-    }
-    return tree;
-}
 
-public T maximum() {
-    BSTNode<T> p = maximum(mRoot);
-    if (null != p) {
-        return p.key;
-    }
-    return null;
-}
-```
+        private BSTNode<T> maximum(BSTNode<T> tree) {
+            if (null == tree) {
+                return null;
+            }
+            while(null != tree.right) {
+                tree = tree.right;
+            }
+            return tree;
+        }
+
+        public T maximum() {
+            BSTNode<T> p = maximum(mRoot);
+            if (null != p) {
+                return p.key;
+            }
+            return null;
+        }
+
 
 ### 查找最小值的代码
 
-```
-private BSTNode<T> minimum(BSTNode<T> tree) {
-    if (null != tree) {
-        return null;
-    }
-    while (null != tree.left) {
-        tree = tree.left;
-    }
-    return tree;
-}
 
-public T minimum() {
-    BSTNode<T> p = minimum(mRoot);
-    if (null != p) {
-        return p.key;
-    }
-    return null;
-}
-```
+        private BSTNode<T> minimum(BSTNode<T> tree) {
+            if (null != tree) {
+                return null;
+            }
+            while (null != tree.left) {
+                tree = tree.left;
+            }
+            return tree;
+        }
+
+        public T minimum() {
+            BSTNode<T> p = minimum(mRoot);
+            if (null != p) {
+                return p.key;
+            }
+            return null;
+        }
+
 
 ## 前驱和后继
 
@@ -314,98 +316,96 @@ public T minimum() {
 
 ### 查找前驱结点代码
 
-```
-// 找结点x的前驱结点，即，查找：二叉树中数据小于该结点的最大结点
-public BSTNode<T> predecessor(BSTNode<T> x) {
-    // 如果x存在左子树，则x的前驱结点为：以其左孩子为根的子树的最大结点
-    if (null != x.left) {
-        return maximum(x.left);
-    }
+        // 找结点x的前驱结点，即，查找：二叉树中数据小于该结点的最大结点
+        public BSTNode<T> predecessor(BSTNode<T> x) {
+            // 如果x存在左子树，则x的前驱结点为：以其左孩子为根的子树的最大结点
+            if (null != x.left) {
+                return maximum(x.left);
+            }
 
-    // 如果没有左子树，则有以下两种可能：
-    // 1. x是一个右孩子，则x的前驱结点为它的父结点
-    // 2. x是一个左孩子，则查找x的最低的父结点，并且该父结点要具有右孩子
-    BSTNode<T> y = x.parent;
-    // 一直找
-    while(null != y && y.left == x) {
-        x = y;
-        y = y.parent;
-    }
-    return y;
-}
-```
+            // 如果没有左子树，则有以下两种可能：
+            // 1. x是一个右孩子，则x的前驱结点为它的父结点
+            // 2. x是一个左孩子，则查找x的最低的父结点，并且该父结点要具有右孩子
+            BSTNode<T> y = x.parent;
+            // 一直找
+            while(null != y && y.left == x) {
+                x = y;
+                y = y.parent;
+            }
+            return y;
+        }
+
 
 ### 查找后继结点的代码
 
-```
-// 找结点x的后继结点，即，查找二叉树中数据大于该结点的最小结点
-public BSTNode<T> successor(BSTNode<T> x) {
-    // 如果x存在右子树，则x的后继结点为以其右孩子为根结点的子树的最小结点
-    if (null != x.right) {
-        return minimum(x.right);
-    }
-    // 如果x没有右孩子。则x右以下两种可能：
-    // 1. x是一个左孩子，则x的后继结点为它的父结点
-    // 2. x是一个右孩子，则查找x的最低的父结点，并且该父结点要具有左孩子，找到的这个最低的父结点就是x的后继结点
-    BSTNode<T> y = x.parent;
-    while(null != y && y.right == x) {
-        x = y;
-        y = y.parent;
-    }
-    return y;
-}
 
-```
+        // 找结点x的后继结点，即，查找二叉树中数据大于该结点的最小结点
+        public BSTNode<T> successor(BSTNode<T> x) {
+            // 如果x存在右子树，则x的后继结点为以其右孩子为根结点的子树的最小结点
+            if (null != x.right) {
+                return minimum(x.right);
+            }
+            // 如果x没有右孩子。则x右以下两种可能：
+            // 1. x是一个左孩子，则x的后继结点为它的父结点
+            // 2. x是一个右孩子，则查找x的最低的父结点，并且该父结点要具有左孩子，找到的这个最低的父结点就是x的后继结点
+            BSTNode<T> y = x.parent;
+            while(null != y && y.right == x) {
+                x = y;
+                y = y.parent;
+            }
+            return y;
+        }
+
 
 ## 重点：插入结点
 
-```
-/**
-* bst 二叉树
-* z 要插入的结点
-*
-/
-private void insert(BSTNode<T> bst, BSTNode<T> z) {
-    int cmp;
-    BSTNode<T> y = null;
-    BSTNode<T> x = bst.mRoot;
 
-    // 查找z的插入位置
-    while (null != x) {
-        y = x;
-        cmp = z.key.compareTo(x.key);
-        if (cmp < 0) {
-            x = x.left;
-        } else {
-            x = x.right;
-        }
-    }
-    z.parent = y;
-    if (null == y) {
-        bst.mRoot = z;
-    } else {
-        // 放左边还是右边
-        cmp = z.key.compareTo(y.key);
-        if (cmp < 0) {
-            y.left = z;
-        } else {
-            y.right = z;
-        }
-    }
-}
+        /**
+        * bst 二叉树
+        * z 要插入的结点
+        *
+        /
+        private void insert(BSTNode<T> bst, BSTNode<T> z) {
+            int cmp;
+            BSTNode<T> y = null;
+            BSTNode<T> x = bst.mRoot;
 
-/**
-*
-* 新建结点key，并将其插入到二叉树中
-*
-*/
-public void insert(T key) {
-    BSTNode<T> z = new BSTNode<T>(key, null, null, null);
-    if (null != z) {
-        insert(this, z);
-    }
-}
-```
+            // 查找z的插入位置
+            while (null != x) {
+                y = x;
+                cmp = z.key.compareTo(x.key);
+                if (cmp < 0) {
+                    x = x.left;
+                } else {
+                    x = x.right;
+                }
+            }
+            z.parent = y;
+            if (null == y) {
+                bst.mRoot = z;
+            } else {
+                // 放左边还是右边
+                cmp = z.key.compareTo(y.key);
+                if (cmp < 0) {
+                    y.left = z;
+                } else {
+                    y.right = z;
+                }
+            }
+        }
+
+        /**
+        *
+        * 新建结点key，并将其插入到二叉树中
+        *
+        */
+        public void insert(T key) {
+            BSTNode<T> z = new BSTNode<T>(key, null, null, null);
+            if (null != z) {
+                insert(this, z);
+            }
+        }
+
 
 ## 重点：删除结点
 1. 如果z没有孩子结点，那么只是简单地将它删除，并修改它的父结点，用NULL来替换z
@@ -441,50 +441,49 @@ public void insert(T key) {
 
 &emsp;&emsp;为了在二叉搜索树内移动子树，定义一个子过程transplant,它是用另一课子树替换一颗子树并成为其双亲的孩子结点。当transplant用一颗以v为根的子树来替换一颗以u为根的子树时，结点u的双亲就变为结点v的双亲，并且最后v成为u的双亲的相应孩子.
 
-```
-transplant(BSTNode<T> u, BSTNode<T> v){
-    if (u.parent == NULL) {
-        mRoot = v;
-    } else if (u == u.parent.left) {
-        u.parent.left = v;
-    } else {
-        u.parent.right = v;
-    }
-    if (v != NULL) {
-        v.parent = u.parent;
-    }
-}
-```
+        transplant(BSTNode<T> u, BSTNode<T> v){
+            if (u.parent == NULL) {
+                mRoot = v;
+            } else if (u == u.parent.left) {
+                u.parent.left = v;
+            } else {
+                u.parent.right = v;
+            }
+            if (v != NULL) {
+                v.parent = u.parent;
+            }
+        }
+
 
 &emsp;&emsp;注意到，transplant并没有处理v.left和v.right的更新；这些更新都是有transplant的调用者来负责的。下面是从二叉搜索树中删除结点z的删除过程：
 
-```
-/**
-* 删除结点
-*
-*/
-public void remove(T key) {
-    BSTNode<T> z,y;
 
-    if ((z = search(mRoot, key)) != null) {
-        if (z.left == NULL) {
-            transplant(z, z.right);
-        } else if (z.right == NULL) {
-            transplant(z, z.left);
-        } else {
-            y = minmum(z.right)
-            if (y.parent != z) {
-                transplant(y, y.right);
-                y.right = z.right;
-                y.right.parent = y;
+        /**
+        * 删除结点
+        *
+        */
+        public void remove(T key) {
+            BSTNode<T> z,y;
+
+            if ((z = search(mRoot, key)) != null) {
+                if (z.left == NULL) {
+                    transplant(z, z.right);
+                } else if (z.right == NULL) {
+                    transplant(z, z.left);
+                } else {
+                    y = minmum(z.right)
+                    if (y.parent != z) {
+                        transplant(y, y.right);
+                        y.right = z.right;
+                        y.right.parent = y;
+                    }
+                    transplant(z,y);
+                    y.left = z.left;
+                    y.left.parent = y;
+                }
             }
-            transplant(z,y);
-            y.left = z.left;
-            y.left.parent = y;
         }
-    }
-}
-```
+
 
 &emsp;&emsp;remove过程处理4中情况如下。9-10行处理结点z没有左孩子的情况，第11-12行处理z有一个左孩子但没有右孩子情况。第13-22行处理剩下的两种情况，也就是z有两个孩子的情形。第14行查找结点y，它是z的后继。因为z的右子树非空，这样后继一定是这个子树中具有最小关键字的结点，因此就调用minmum(z.right)。如前所述，y没有左孩子。将y移出它原来位置进行拼接，并替换树中的z。如果y是z的右孩子，那么第20-22行用y替换z并成为z的双亲的一个孩子，用z的左孩子替换y的左孩子。如果y不是z的左孩子，第16-18行用y的右孩子替换y并成为y的双亲的一个孩子，然后将z的右孩子转变为y的右孩子，最后第20-22行用y替换y成为z的双亲的一个孩子，再用z的左孩子替换为y的左孩子。
 
@@ -492,196 +491,195 @@ public void remove(T key) {
 
 ## 打印
 
-```
-/*
-*   打印"二叉查找树"
-*
-*   key         结点的值
-*   direction   0，表示该结点是根结点
-*               -1，表示该节点是它的父节点左孩子
-*               1，表示该节点是他的父节点右孩子
-*/
-private void print(BSTNode<T> tree, T key, int direction) {
-    if (null != tree) {
-        if (0 == direction) {
-            sout("%2d is root\n", tree.key);
-        } else {
-            sout("%2d is %2d`s %6s child\n", tree.key, key, direction==1?"right":"left");
-        }
-        print(tree.left, tree.key, -1);
-        print(tree.right, tree.key, 1);
-    }
-}
 
-public void print() {
-    if (null != mRoot) {
-        print(mRoot, mRoot.key, 0);
-    }
-}
-```
+        /*
+        *   打印"二叉查找树"
+        *
+        *   key         结点的值
+        *   direction   0，表示该结点是根结点
+        *               -1，表示该节点是它的父节点左孩子
+        *               1，表示该节点是他的父节点右孩子
+        */
+        private void print(BSTNode<T> tree, T key, int direction) {
+            if (null != tree) {
+                if (0 == direction) {
+                    sout("%2d is root\n", tree.key);
+                } else {
+                    sout("%2d is %2d`s %6s child\n", tree.key, key, direction==1?"right":"left");
+                }
+                print(tree.left, tree.key, -1);
+                print(tree.right, tree.key, 1);
+            }
+        }
+
+        public void print() {
+            if (null != mRoot) {
+                print(mRoot, mRoot.key, 0);
+            }
+        }
+
 
 ## 销毁
 
-```
-private void destroy(BSTNode<T> tree) {
-    if (null == tree) {
-        return;
-    }
-    if (null != tree.left) {
-        destroy(tree.left);
-    }
-    if (null != tree.right) {
-        destroy(tree.right);
-    }
-    tree = null;
-}
 
-public void clear() {
-    destroy(mRoot);
-    mRoot = null;
-}
-```
+        private void destroy(BSTNode<T> tree) {
+            if (null == tree) {
+                return;
+            }
+            if (null != tree.left) {
+                destroy(tree.left);
+            }
+            if (null != tree.right) {
+                destroy(tree.right);
+            }
+            tree = null;
+        }
+
+        public void clear() {
+            destroy(mRoot);
+            mRoot = null;
+        }
+
 
 ## golang实现二叉搜索树
 
-```
-package btree
 
-import (
-    "bytes"
-    "fmt"
-    "github.com/emirpasic/gods/trees"
-    "github.com/emirpasic/gods/utils"
-    "strings"
-)
+        package btree
 
-// Entry represents(代表) the k-v pair(对) contained within nodes
-type Entry struct {
-    Key     interface{}
-    Value   interface{}
-}
+        import (
+            "bytes"
+            "fmt"
+            "github.com/emirpasic/gods/trees"
+            "github.com/emirpasic/gods/utils"
+            "strings"
+        )
 
-// Node is a single element within the tree
-type Node struct {
-    Parent      *Node
-    Entries     []*Entry    // Contained keys in node
-    Children    []*Node    // Children nodes
-}
-
-// Tree holds elements of the B-tree
-type Tree struct {
-    Root        *Node               // Root node
-    Comparator  utils.Comparator    // key comparator
-    size        int                 // Total number of keys in the tree     实际树中结点个数量
-    m           int                 // order (maximum number of children) 预期树中孩子的最大数量
-}
-
-// NewWith instantiates a B-tree with the order and a custom key comparator
-func NewWith(order int, comparator utils.Comparator) *Tree {
-    if order < 3 {
-        panic("Invalid order, should be at least 3")
-    }
-    return &Tree{m: order, Comparator: comparator}
-}
-
-func NewWithIntComparator(order int) *Tree {
-    return NewWith(order, utils.IntComparator)
-}
-
-func NewWIthStringComparator(order int) *Tree {
-    return NewWith(order, utils.StringComparator)
-}
-
-// Put inserts k-v pair node into the tree.
-// If k already exists, then its value is updated with the new v
-// K should adhere to the comparator`s type assertion, otherwise method panics（key 必须是comparator的断言类型，否则会异常中断）
-func (tree *Tree) Put(key interface{}, value interface{}) {
-    entry := &Entry{key, value}
-    if tree.Root == nil {
-        tree.Root = &Node{Entries: []*Entry{entry}, Children: []*Node{}}
-        tree.size++
-        return
-    }
-    if tree.insert(tree.Root, entry) {
-        tree.size++
-    }
-}
-
-func (tree *Tree) insert(node *Node, entry *Entry) (inserted bool) {
-    if tree.isLeaf(node) {
-        return tree.isertIntoLeaf(node, entry)
-    }
-    return tree.insertIntoInternal(node, entry)
-}
-
-func (tree *Tree) isLeaf(node *Node) bool {
-    return len(node.Children) == 0
-}
-
-func (tree *Tree) insertIntoLeaf(node *Node, entry *Entry) (inserted bool) {
-    insertPosition, found := tree.search(node, entry.Key)
-    if found {
-        // update v
-        node.Entries[insertPosition] = entry
-        return false
-    }
-    // insert entry`s k in the middle of the node
-    node.Entries = append(node.Entries, nil)
-    // 后移一位
-    copy(node.Entries[insertPosition+1:], node.Entries[insertPosition:])
-    node.Entries[insertPosition] = entry
-    tree.split(node)
-    return true
-}
-
-// search searches only within the single node among its entries
-func (tree *Tree) search(node *Node, key interface{}) (index int, found bool) {
-    low, high := 0, len(node.Emtries) - 1
-    var mid int
-    for low <= high {
-        mid = (high + low) / 2      // mid = (high + low) >> 1
-        compare := tree.Comparator(key, node.Entries[mid].key)
-        switch {
-            case compare > 0: 
-                low = mid + 1
-            case compare < 0:
-                high = mid - 1
-            case compare == 0: 
-                return mid, true
+        // Entry represents(代表) the k-v pair(对) contained within nodes
+        type Entry struct {
+            Key     interface{}
+            Value   interface{}
         }
-    }
-    return low, false
-}
 
-func (tree *Tree) split(node *Node) {
-    if !tree.shouldSplit(node) {
-        return
-    }
-    if node == tree.Root {
-        tree.splitRoot()
-        return
-    }
-    tree.splitNonRoot(node)
-}
+        // Node is a single element within the tree
+        type Node struct {
+            Parent      *Node
+            Entries     []*Entry    // Contained keys in node
+            Children    []*Node    // Children nodes
+        }
 
-func (tree *Tree) shouldSplit(node *Node) bool {
-    return len(node.Entries) > tree.maxEntries()
-}
+        // Tree holds elements of the B-tree
+        type Tree struct {
+            Root        *Node               // Root node
+            Comparator  utils.Comparator    // key comparator
+            size        int                 // Total number of keys in the tree     实际树中结点个数量
+            m           int                 // order (maximum number of children) 预期树中孩子的最大数量
+        }
 
-func (tree *Tree) middle() int {
-    return (tree.m - 1) / 2
-}
+        // NewWith instantiates a B-tree with the order and a custom key comparator
+        func NewWith(order int, comparator utils.Comparator) *Tree {
+            if order < 3 {
+                panic("Invalid order, should be at least 3")
+            }
+            return &Tree{m: order, Comparator: comparator}
+        }
 
-func (tree *Tree) splitRoot() {
-    middle := tree.middle()
+        func NewWithIntComparator(order int) *Tree {
+            return NewWith(order, utils.IntComparator)
+        }
 
-    left := &Node{Entries: append([]*Entry(nil), tree.Root.Entries[:middle]...)}
-    right := &Node{ENtries: append([]*ENtry(nil), tree.Root.Entries[middle+1:]...)}
+        func NewWIthStringComparator(order int) *Tree {
+            return NewWith(order, utils.StringComparator)
+        }
 
-    // move children from the node to be split into left and right nodes
-    if !tree.isLeaf(tree.Root) {
-        left.Children = append([]*Node(nil), tree.Root.Children(:middle+1)...)
+        // Put inserts k-v pair node into the tree.
+        // If k already exists, then its value is updated with the new v
+        // K should adhere to the comparator`s type assertion, otherwise method panics（key 必须是comparator的断言类型，否则会异常中断）
+        func (tree *Tree) Put(key interface{}, value interface{}) {
+            entry := &Entry{key, value}
+            if tree.Root == nil {
+                tree.Root = &Node{Entries: []*Entry{entry}, Children: []*Node{}}
+                tree.size++
+                return
+            }
+            if tree.insert(tree.Root, entry) {
+                tree.size++
+            }
+        }
 
-    }
-}
-```
+        func (tree *Tree) insert(node *Node, entry *Entry) (inserted bool) {
+            if tree.isLeaf(node) {
+                return tree.isertIntoLeaf(node, entry)
+            }
+            return tree.insertIntoInternal(node, entry)
+        }
+
+        func (tree *Tree) isLeaf(node *Node) bool {
+            return len(node.Children) == 0
+        }
+
+        func (tree *Tree) insertIntoLeaf(node *Node, entry *Entry) (inserted bool) {
+            insertPosition, found := tree.search(node, entry.Key)
+            if found {
+                // update v
+                node.Entries[insertPosition] = entry
+                return false
+            }
+            // insert entry`s k in the middle of the node
+            node.Entries = append(node.Entries, nil)
+            // 后移一位
+            copy(node.Entries[insertPosition+1:], node.Entries[insertPosition:])
+            node.Entries[insertPosition] = entry
+            tree.split(node)
+            return true
+        }
+
+        // search searches only within the single node among its entries
+        func (tree *Tree) search(node *Node, key interface{}) (index int, found bool) {
+            low, high := 0, len(node.Emtries) - 1
+            var mid int
+            for low <= high {
+                mid = (high + low) / 2      // mid = (high + low) >> 1
+                compare := tree.Comparator(key, node.Entries[mid].key)
+                switch {
+                    case compare > 0: 
+                        low = mid + 1
+                    case compare < 0:
+                        high = mid - 1
+                    case compare == 0: 
+                        return mid, true
+                }
+            }
+            return low, false
+        }
+
+        func (tree *Tree) split(node *Node) {
+            if !tree.shouldSplit(node) {
+                return
+            }
+            if node == tree.Root {
+                tree.splitRoot()
+                return
+            }
+            tree.splitNonRoot(node)
+        }
+
+        func (tree *Tree) shouldSplit(node *Node) bool {
+            return len(node.Entries) > tree.maxEntries()
+        }
+
+        func (tree *Tree) middle() int {
+            return (tree.m - 1) / 2
+        }
+
+        func (tree *Tree) splitRoot() {
+            middle := tree.middle()
+
+            left := &Node{Entries: append([]*Entry(nil), tree.Root.Entries[:middle]...)}
+            right := &Node{ENtries: append([]*ENtry(nil), tree.Root.Entries[middle+1:]...)}
+
+            // move children from the node to be split into left and right nodes
+            if !tree.isLeaf(tree.Root) {
+                left.Children = append([]*Node(nil), tree.Root.Children(:middle+1)...)
+
+            }
+        }

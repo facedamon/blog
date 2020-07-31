@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>设计模式/创建模式 on FaceDamon`s Blog</title>
+    <link>http://facedamon.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 设计模式/创建模式 on FaceDamon`s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    
+	<atom:link href="http://facedamon.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>[设计模式 | 创建模式 | 原型模式]</title>
+      <link>http://facedamon.github.io/post/design-patterns/creation-type/prototype/</link>
+      <pubDate>Tue, 15 Oct 2019 17:22:56 +0800</pubDate>
+      
+      <guid>http://facedamon.github.io/post/design-patterns/creation-type/prototype/</guid>
+      <description>转载自https://www.cnblogs.com/java-my-life/ 通过给出一个原型对象来知名所有创建的对象的类型，然后用复制这</description>
+    </item>
+    
+    <item>
+      <title>[设计模式 | 创建模式 | 构建模式]</title>
+      <link>http://facedamon.github.io/post/design-patterns/creation-type/builder/</link>
+      <pubDate>Tue, 15 Oct 2019 17:06:56 +0800</pubDate>
+      
+      <guid>http://facedamon.github.io/post/design-patterns/creation-type/builder/</guid>
+      <description>转载自https://www.cnblogs.com/java-my-life/ 建造模式是对象的创建模式。建造模式可以将一个产品的内部表象(</description>
+    </item>
+    
+    <item>
+      <title>[设计模式 | 创建模式 | 抽象工厂模式]</title>
+      <link>http://facedamon.github.io/post/design-patterns/creation-type/abstract-factory/</link>
+      <pubDate>Tue, 15 Oct 2019 15:43:56 +0800</pubDate>
+      
+      <guid>http://facedamon.github.io/post/design-patterns/creation-type/abstract-factory/</guid>
+      <description>转载自https://www.cnblogs.com/java-my-life/ 概述 举个生活中常见的例子&amp;ndash;组装电脑。 我们在组装电</description>
+    </item>
+    
+    <item>
+      <title>[设计模式 | 创建模式 | 动态工厂模式]</title>
+      <link>http://facedamon.github.io/post/design-patterns/creation-type/dynamic-factory/</link>
+      <pubDate>Tue, 15 Oct 2019 15:42:56 +0800</pubDate>
+      
+      <guid>http://facedamon.github.io/post/design-patterns/creation-type/dynamic-factory/</guid>
+      <description>转载自https://www.cnblogs.com/java-my-life/ 工厂方法模式是类的创建模式，又叫多态性工厂模式，他的用意是定</description>
+    </item>
+    
+    <item>
+      <title>[设计模式 | 创建模式 | 静态工厂模式]</title>
+      <link>http://facedamon.github.io/post/design-patterns/creation-type/static-factory/</link>
+      <pubDate>Tue, 15 Oct 2019 15:36:56 +0800</pubDate>
+      
+      <guid>http://facedamon.github.io/post/design-patterns/creation-type/static-factory/</guid>
+      <description>转载自https://www.cnblogs.com/java-my-life/ 简单工厂模式是类的创建型模式，又叫静态工厂方法模式。简单工厂</description>
+    </item>
+    
+    <item>
+      <title>[设计模式 | 创建模式 | 单例模式]</title>
+      <link>http://facedamon.github.io/post/design-patterns/creation-type/singleton/</link>
+      <pubDate>Tue, 15 Oct 2019 15:10:56 +0800</pubDate>
+      
+      <guid>http://facedamon.github.io/post/design-patterns/creation-type/singleton/</guid>
+      <description>转载自https://www.cnblogs.com/java-my-life/ 单例类只能有一个实例 单例类必须自己创建自己的唯一实例 单例类必</description>
+    </item>
+    
+  </channel>
+</rss>

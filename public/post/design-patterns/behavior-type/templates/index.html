@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>[设计模式 | 行为模式 | 模板模式] - FaceDamon`s Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="java-my-life" /><meta name="description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 准备一个抽象类，将部分逻辑以具体方法以及具体构造函数的形" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.73.0 with theme even" />
+
+
+<link rel="canonical" href="http://facedamon.github.io/post/design-patterns/behavior-type/templates/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="[设计模式 | 行为模式 | 模板模式]" />
+<meta property="og:description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 准备一个抽象类，将部分逻辑以具体方法以及具体构造函数的形" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://facedamon.github.io/post/design-patterns/behavior-type/templates/" />
+<meta property="article:published_time" content="2019-10-15T14:59:56+08:00" />
+<meta property="article:modified_time" content="2019-10-15T14:59:56+08:00" />
+<meta itemprop="name" content="[设计模式 | 行为模式 | 模板模式]">
+<meta itemprop="description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 准备一个抽象类，将部分逻辑以具体方法以及具体构造函数的形">
+<meta itemprop="datePublished" content="2019-10-15T14:59:56&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-15T14:59:56&#43;08:00" />
+<meta itemprop="wordCount" content="2591">
+
+
+
+<meta itemprop="keywords" content="设计模式," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[设计模式 | 行为模式 | 模板模式]"/>
+<meta name="twitter:description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 准备一个抽象类，将部分逻辑以具体方法以及具体构造函数的形"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">FaceDamon</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about-me/">
+        <li class="mobile-menu-item">About Me</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">FaceDamon</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about-me/">About Me</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">[设计模式 | 行为模式 | 模板模式]</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-10-15 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F/"> 设计模式/行为模式 </a>
+            </div>
+          <span class="more-meta"> 约 2591 字 </span>
+          <span class="more-meta"> 预计阅读 6 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>转载自https://www.cnblogs.com/java-my-life/</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>概述</p>
+</blockquote>
+<ul>
+<li>准备一个抽象类，将部分逻辑以具体方法以及具体构造函数的形式实现，然后声明一些抽象方法来迫使子类实现剩余的逻辑。不同的子类可以以不同的方式实现这些抽象方法，从而对剩余的逻辑有不同的实现。这就是模板方法模式的用意</li>
+<li>结构:模板方法模式是所有模式中最为常见的几个模式之一，是<strong>基于继承的代码复用的基本技术。</strong></li>
+</ul>
+<p>模板方法模式需要开发抽象类和具体子类的设计师之间的协作。一个设计师负责给出一个算法的轮廓和骨架，另一些设计师则负责给出这个算法的各个逻辑步骤。代表这些具体逻辑步骤的方法称做基本方法(primitive method)；而将这些基本方法汇总起来的方法叫做模板方法(template method)，这个设计模式的名字就是从此而来</p>
+<p>　　
+<img src="https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/template/%E6%8A%BD%E8%B1%A1%E6%A8%A1%E6%9D%BF%E6%9E%B6%E6%9E%84.png" alt="avatar"></p>
+<ul>
+<li><code>Abstract Template(抽象模板角色)</code>:定义一个或多个抽象操作,一遍让子类实现.这些抽象操作叫做基本操作,它们是一个顶级逻辑的组成步骤</li>
+</ul>
+<p>定义并实现了一个模板方法。这个模板方法一般是一个具体方法，它给出了一个顶级逻辑的骨架，而逻辑的组成步骤在相应的抽象操作中，推迟到子类实现。顶级逻辑也有可能调用一些具体方法</p>
+<ul>
+<li>
+<p><code>Concrete Template(具体模板)</code>:实现父类所定义的一个或多个抽象方法，它们是一个顶级逻辑的组成步骤
+每一个抽象模板角色都可以有任意多个具体模板角色与之对应，而每一个具体模板角色都可以给出这些抽象方法（也就是顶级逻辑的组成步骤）的不同实现，从而使得顶级逻辑的实现各不相同</p>
+<pre><code>  public abstract class AbstractTempalte{
+      public final templeteMethod(){
+          abstractMethod();
+          hookMethod();
+          concreteMethod();
+      }
+      protected abstract void abstractMethod();
+      protected void hoohMethod(){
+      }
+      private final void concreteMethod(){
+          //do some thing;
+      }
+  }
+
+
+  public class ConcreteTemplate extends AbstractTemplate{
+      //基本方法的实现
+      @Override
+      public void abstractMethod() {
+          //业务相关的代码
+      }
+      //重写父类的方法
+      @Override
+      public void hookMethod() {
+          //业务相关的代码
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p>模板方法模式中的方法：模板方法中的方法可以分为两大类：模板方法和基本方法。</p>
+</li>
+</ul>
+<ol>
+<li>模板方法:一个模板方法是定义在抽象类中的，把基本操作方法组合在一起形成一个总算法或一个总行为的方法；一个抽象类可以有任意多个模板方法，而不限于一个。每一个模板方法都可以调用任意多个具体方法</li>
+<li>基本方法：基本方法又可以分为三种：抽象方法(Abstract Method)、具体方法(Concrete Method)和钩子方法(Hook Method)
+2.1 <code>抽象方法</code>：一个抽象方法由抽象类声明，由具体子类实现。在Java语言里抽象方法以abstract关键字标示
+2.2 <code>具体方法</code>：一个具体方法由抽象类声明并实现，而子类并不实现或置换
+2.3 <code>钩子方法</code>：一个钩子方法由抽象类声明并实现，而子类会加以扩展。通常抽象类给出的实现是一个空实现，作为方法的默认实现</li>
+</ol>
+<p>在上面的例子中，AbstractTemplate是一个抽象类，它带有三个方法。其中abstractMethod()是一个抽象方法，它由抽象类声明为抽象方法，并由子类实现；hookMethod()是一个钩子方法，它由抽象类声明并提供默认实现，并且由子类置换掉。concreteMethod()是一个具体方法，它由抽象类声明并实现</p>
+<ul>
+<li>默认钩子方法
+一个钩子方法常常由抽象类给出一个空实现作为此方法的默认实现。这种空的钩子方法叫做“Do Nothing Hook”。显然，这种默认钩子方法在缺省适配模式里面已经见过了，一个缺省适配模式讲的是一个类为一个接口提供一个默认的空实现，从而使得缺省适配类的子类不必像实现接口那样必须给出所有方法的实现，因为通常一个具体类并不需要所有的方法
+#命名规则
+<strong><code>钩子方法的名字应当以do开始</code></strong>，这是熟悉设计模式的Java开发人员的标准做法。在上面的例子中，钩子方法hookMethod()应当以do开头；在HttpServlet类中，也遵从这一命名规则，如doGet()、doPost()等方法</li>
+</ul>
+<blockquote>
+<p>案例</p>
+</blockquote>
+<ul>
+<li>考虑一个计算存款利息的例子。假设系统需要支持两种存款账号，即货币市场(Money Market)账号和定期存款(Certificate of Deposite)账号。这两种账号的存款利息是不同的，因此，在计算一个存户的存款利息额时，必须区分两种不同的账号类型。</li>
+</ul>
+<p>　　这个系统的总行为应当是计算出利息，这也就决定了作为一个模板方法模式的顶级逻辑应当是利息计算。由于利息计算涉及到两个步骤：一个基本方法给出账号种类，另一个基本方法给出利息百分比。这两个基本方法构成具体逻辑，因为账号的类型不同，所以具体逻辑会有所不同。</p>
+<p>　　显然，系统需要一个抽象角色给出顶级行为的实现，而将两个作为细节步骤的基本方法留给具体子类实现。由于需要考虑的账号有两种：一是货币市场账号，二是定期存款账号</p>
+<p><img src="https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/interpreter/%E6%A1%88%E4%BE%8B%E5%9B%BE.png" alt="avatar"></p>
+<pre><code>    public abstract class Account {
+        /**
+        * 模板方法，计算利息数额
+        * @return 返回利息数额
+        */
+        public final double calculateInterest(){
+            double interestRate = doCalculateInterestRate();
+            String accountType = doCalculateAccountType();
+            double amount = calculateAmount(accountType);
+            return amount * interestRate;
+        }
+        /**
+        * 基本方法留给子类实现
+        */
+        protected abstract String doCalculateAccountType();
+        /**
+        * 基本方法留给子类实现
+        */
+        protected abstract double doCalculateInterestRate();
+        /**
+        * 基本方法，已经实现
+        */
+        private double calculateAmount(String accountType){
+            /**
+            * 省略相关的业务逻辑
+            */
+            return 7243.00;
+        }
+    }
+
+
+    public class MoneyMarketAccount extends Account {
+
+        @Override
+        protected String doCalculateAccountType() {
+            
+            return &quot;Money Market&quot;;
+        }
+
+        @Override
+        protected double doCalculateInterestRate() {
+            
+            return 0.045;
+        }
+
+    }
+
+
+    public class CDAccount extends Account {
+
+        @Override
+        protected String doCalculateAccountType() {
+            return &quot;Certificate of Deposite&quot;;
+        }
+
+        @Override
+        protected double doCalculateInterestRate() {
+            return 0.06;
+        }
+
+    }
+
+
+    public class Client {
+
+        public static void main(String[] args) {
+            Account account = new MoneyMarketAccount();
+            System.out.println(&quot;货币市场账号的利息数额为：&quot; + account.calculateInterest());
+            account = new CDAccount();
+            System.out.println(&quot;定期账号的利息数额为：&quot; + account.calculateInterest());
+        }
+
+    }
+</code></pre>
+<blockquote>
+<p>servlet 应用</p>
+</blockquote>
+<ul>
+<li>
+<p>使用过Servlet的人都清楚，除了要在web.xml做相应的配置外，还需继承一个叫HttpServlet的抽象类。HttpService类提供了一个service()方法，这个方法调用七个do方法中的一个或几个，完成对客户端调用的响应。这些do方法需要由HttpServlet的具体子类提供，因此这是典型的模板方法模式。下面是service()方法的源代码</p>
+<pre><code>  protected void service(HttpServletRequest req, HttpServletResponse resp)
+          throws ServletException, IOException {
+
+          String method = req.getMethod();
+
+          if (method.equals(METHOD_GET)) {
+              long lastModified = getLastModified(req);
+              if (lastModified == -1) {
+                  // servlet doesn't support if-modified-since, no reason
+                  // to go through further expensive logic
+                  doGet(req, resp);
+              } else {
+                  long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
+                  if (ifModifiedSince &lt; (lastModified / 1000 * 1000)) {
+                      // If the servlet mod time is later, call doGet()
+                      // Round down to the nearest second for a proper compare
+                      // A ifModifiedSince of -1 will always be less
+                      maybeSetLastModified(resp, lastModified);
+                      doGet(req, resp);
+                  } else {
+                      resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                  }
+              }
+
+          } else if (method.equals(METHOD_HEAD)) {
+              long lastModified = getLastModified(req);
+              maybeSetLastModified(resp, lastModified);
+              doHead(req, resp);
+
+          } else if (method.equals(METHOD_POST)) {
+              doPost(req, resp);
+                
+          } else if (method.equals(METHOD_PUT)) {
+              doPut(req, resp);        
+                
+          } else if (method.equals(METHOD_DELETE)) {
+              doDelete(req, resp);
+                
+          } else if (method.equals(METHOD_OPTIONS)) {
+              doOptions(req,resp);
+                
+          } else if (method.equals(METHOD_TRACE)) {
+              doTrace(req,resp);
+                
+          } else {
+              //
+              // Note that this means NO servlet supports whatever
+              // method was requested, anywhere on this server.
+              //
+
+              String errMsg = lStrings.getString(&quot;http.method_not_implemented&quot;);
+              Object[] errArgs = new Object[1];
+              errArgs[0] = method;
+              errMsg = MessageFormat.format(errMsg, errArgs);
+                
+              resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
+          }
+      }
+
+
+  public class TestServlet extends HttpServlet {
+
+      public void doGet(HttpServletRequest request, HttpServletResponse response)
+              throws ServletException, IOException {
+            
+          System.out.println(&quot;using the GET method&quot;);
+
+      }
+
+      public void doPost(HttpServletRequest request, HttpServletResponse response)
+              throws ServletException, IOException {
+                
+          System.out.println(&quot;using the POST method&quot;);
+      }
+
+  }
+</code></pre>
+</li>
+</ul>
+<blockquote>
+<p>场景</p>
+</blockquote>
+<ul>
+<li>
+<p>优点</p>
+<ul>
+<li>封装不变部分，扩展可变部分。</li>
+<li>提取公共代码，便于维护。</li>
+<li>行为由父类控制，子类实现。</li>
+</ul>
+</li>
+<li>
+<p>缺点
+每一个不同的实现都需要一个子类来实现，导致类的个数增加，使得系统更加庞大</p>
+</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">java-my-life</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-15
+        
+    </span>
+  </p>
+  <p class="copyright-item">
+      <span class="item-title">原始文档</span>
+      <span class="item-content"><a class="link-to-markdown" href="http://facedamon.github.io/post/design-patterns/behavior-type/templates/index.md" target="_blank">查看本文 Markdown 版本 »</a></span>
+    </p>
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="http://www.gnu.org/licenses/" target="_self"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)"></img></a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/design-patterns/creation-type/singleton/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">[设计模式 | 创建模式 | 单例模式]</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/design-patterns/behavior-type/interpreter/">
+            <span class="next-text nav-default">[设计模式 | 行为模式 | 解释器模式]</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:facedamon@163.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://github.com/facedamon" class="iconfont icon-github" title="github"></a>
+  <a href="http://facedamon.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">FaceDamon</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  <script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

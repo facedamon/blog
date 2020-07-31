@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>[设计模式 | 行为模式 | 解释器模式] - FaceDamon`s Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="java-my-life" /><meta name="description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 给定一个语言后,解释器模式可以定义出其文法的一种表示,并" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.73.0 with theme even" />
+
+
+<link rel="canonical" href="http://facedamon.github.io/post/design-patterns/behavior-type/interpreter/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="[设计模式 | 行为模式 | 解释器模式]" />
+<meta property="og:description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 给定一个语言后,解释器模式可以定义出其文法的一种表示,并" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://facedamon.github.io/post/design-patterns/behavior-type/interpreter/" />
+<meta property="article:published_time" content="2019-10-15T14:28:56+08:00" />
+<meta property="article:modified_time" content="2019-10-15T14:28:56+08:00" />
+<meta itemprop="name" content="[设计模式 | 行为模式 | 解释器模式]">
+<meta itemprop="description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 给定一个语言后,解释器模式可以定义出其文法的一种表示,并">
+<meta itemprop="datePublished" content="2019-10-15T14:28:56&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-15T14:28:56&#43;08:00" />
+<meta itemprop="wordCount" content="1464">
+
+
+
+<meta itemprop="keywords" content="设计模式," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[设计模式 | 行为模式 | 解释器模式]"/>
+<meta name="twitter:description" content="转载自https://www.cnblogs.com/java-my-life/ 概述 给定一个语言后,解释器模式可以定义出其文法的一种表示,并"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">FaceDamon</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about-me/">
+        <li class="mobile-menu-item">About Me</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">FaceDamon</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about-me/">About Me</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">[设计模式 | 行为模式 | 解释器模式]</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-10-15 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%BC%8F/"> 设计模式/行为模式 </a>
+            </div>
+          <span class="more-meta"> 约 1464 字 </span>
+          <span class="more-meta"> 预计阅读 3 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>转载自https://www.cnblogs.com/java-my-life/</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>概述</p>
+</blockquote>
+<p>给定一个语言后,解释器模式可以定义出其文法的一种表示,并同时提供一种解释,客户端可以使用这个解释器来解释这个语言的句子.</p>
+<ul>
+<li>结构</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/interpreter/%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt="avatar"></p>
+<ol>
+<li><code>Expression(抽象表达式)</code>:声明一个所有的具体表达式角色都需要实现的抽象接口.这个接口主要时一个Interpret()方法,乘坐解释操作.</li>
+<li><code>Terminal Expression(终结符表达式)</code>:实现了抽象表达式角色所要求的接口,主要时一个interpret()方法;文法中的每一个终结符都具有一个具体中介表达式与之对应.比如有一个简单的公式R=R1+R2,再里面R1和R2就是终结符,对应的解析R1和R2的解释器就是终结符表达式.</li>
+<li><code>Nonterminal Expression(非终结符表达式)</code>:文法中的每一条规则都需要一个具体的非终结符表达式,非终结符表达式一般是文法中的运算符或者其它关键字,比如公式R=R1+R2中,&ldquo;+&quot;就是非终结符,解析&quot;+&quot;的解释器就是一个非终结符表达式.</li>
+<li><code>Context</code>:这个角色的任务一般是用来存放文法中各个终结符所对应的具体值,比如R=R1+R2,我们给R1赋值100,给R2赋值200.这些信息需要存放到环境角色中,很多情况下我们使用Map来充当环境角色就够了.</li>
+</ol>
+<ul>
+<li>
+<p>为了说明解释器模式的实现方法,这里给出一个最简单的文法和对应的解释器模式的实现,这就是模拟Java语言中对布尔表达式进行操作和求值.在这个语言中终结符是布尔变量.非终结符表达式包含运算符and、or、not等布尔表达式.文法如下:</p>
+<pre><code>  Expression ::=Constant|Variable|Or|And|Not
+  And ::=Expression'AND'Expression
+  Or ::=Expression'OR'Expression
+  Not ::=Expression'NOT'Expression
+  Variable ::=任何标识符
+  Constant ::='true'|'false'
+</code></pre>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/interpreter/%E6%A1%88%E4%BE%8B%E5%9B%BE.png" alt="avatar"></p>
+<ul>
+<li>
+<p>源代码</p>
+</li>
+<li>
+<p>抽象表达式角色</p>
+<pre><code>  public abstract class Expression{
+      //以context为准,context包含基本boolean的变量
+      public abstract boolean interpret(Context ctx);
+      //检验两个表达式在结构上是否相同
+      public abstract boolean equals(Object obj);
+        
+      public abstract int hashCode();
+        
+      public abstract String toString();
+  }
+</code></pre>
+</li>
+<li>
+<p>Constant对象代表布尔常量</p>
+<pre><code>  public class Constant extends Expression{
+      private boolean value;
+
+      public Constant(boolean value){
+          this.value = value;
+      }
+        
+      @Override
+      public boolean equals(Object obj){
+          if (obj != null &amp;&amp; obj instanceof Constant){
+              return this.value = ((Constant)obj).value;
+          }
+          return false;
+      }
+        
+      @Override
+      public int hashCode(){
+          return this.toString().hashCode();
+      }
+        
+      @Override
+      public boolean interpret(Context ctx){
+          return value;
+      }
+        
+      @Override
+      public String toString(){
+          return new Boolean(value).toString();
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p>Variable代表一个有名变量</p>
+<pre><code>  public class Variable extends Expression{
+      private String name;
+        
+      public Variable(String name){
+          this.name = name;
+      }
+        
+      @Override
+      public boolean equals(Object obj){
+          if (null != obj &amp;&amp; obj instanceof Variable){
+              return this.name.equals(((Variable)obj).name);
+          }
+          return false;
+      }
+        
+      @Override
+      public int hashCode(){
+          reutrn this.toString().hashCode();
+      }
+        
+      @Override
+      public String toString(){
+          return name;
+      }
+        
+      @Override
+      public boolean interpret(Context ctx){
+          return ctx.lookup(this);
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p>表示由两个布尔表达式通过逻辑and操作给出一个新的布尔表达式</p>
+<pre><code>  /**
+  * @Description: 表示由两个布尔表达式通过逻辑and操作给出一个新的布尔表达式
+  * @Author: facedamon
+  * @CreateDate: 2019/1/18 17:08
+  * @UpdateUser: facedamon
+  * @UpdateDate: 2019/1/18 17:08
+  * @UpdateRemark: 修改内容
+  * @Version: 1.0
+  */
+  public class And extends Expression {
+
+      private Expression left,right;
+
+      public And(Expression left, Expression right) {
+          this.left = left;
+          this.right = right;
+      }
+
+      @Override
+      public boolean interpret(Context ctx) {
+          return left.interpret(ctx) &amp;&amp; right.interpret(ctx);
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+          if (null != obj &amp;&amp; obj instanceof And){
+              return left.equals(((And) obj).left)
+                      &amp;&amp; right.equals(((And) obj).right);
+          }
+          return false;
+      }
+
+      @Override
+      public int hashCode() {
+          return this.toString().hashCode();
+      }
+
+      @Override
+      public String toString() {
+          return &quot;(&quot; + left.toString() + &quot; AND &quot; + right.toString() + &quot;)&quot;;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p>由一个布尔表达式通过逻辑“非”操作给出一个新的布尔表达式的操作</p>
+<pre><code>  /**
+  * @Description: 由一个布尔表达式通过逻辑“非”操作给出一个新的布尔表达式的操作
+  * @Author: facedamon
+  * @CreateDate: 2019/1/18 17:22
+  * @UpdateUser: facedamon
+  * @UpdateDate: 2019/1/18 17:22
+  * @UpdateRemark: 修改内容
+  * @Version: 1.0
+  */
+  public class Not extends Expression {
+
+      private Expression exp;
+
+      public Not(Expression exp) {
+          this.exp = exp;
+      }
+
+      @Override
+      public boolean interpret(Context ctx) {
+          return !exp.interpret(ctx);
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+          if (null != obj &amp;&amp; obj instanceof Not){
+              return exp.equals(((Not) obj).exp);
+          }
+          return false;
+      }
+
+      @Override
+      public int hashCode() {
+          return this.toString().hashCode();
+      }
+
+      @Override
+      public String toString() {
+          return &quot;(Not &quot; + exp.toString() + &quot;)&quot;;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p>两个布尔表达式通过逻辑或给出一个新的布尔表达式</p>
+<pre><code>  /**
+  * @Description: 两个布尔表达式通过逻辑或给出一个新的布尔表达式
+  * @Author: facedamon
+  * @CreateDate: 2019/1/18 17:19
+  * @UpdateUser: facedamon
+  * @UpdateDate: 2019/1/18 17:19
+  * @UpdateRemark: 修改内容
+  * @Version: 1.0
+  */
+  public class Or extends Expression {
+
+      private Expression left,right;
+
+      public Or(Expression left, Expression right) {
+          this.left = left;
+          this.right = right;
+      }
+
+      @Override
+      public boolean interpret(Context ctx) {
+          return left.interpret(ctx) || right.interpret(ctx);
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+          if (null != obj &amp;&amp; obj instanceof Or){
+              return left.equals(((Or) obj).left)
+                      &amp;&amp; right.equals(((Or) obj).right);
+          }
+          return false;
+      }
+
+      @Override
+      public int hashCode() {
+          return this.toString().hashCode();
+      }
+
+      @Override
+      public String toString() {
+          return &quot;(&quot; + left.toString() + &quot; OR &quot; + right.toString() + &quot;)&quot;;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p>client</p>
+<pre><code>  public class Client {
+      public static void main(String[] args) {
+          Context ctx = new Context();
+          Variable x = new Variable(&quot;x&quot;);
+          Variable y = new Variable(&quot;y&quot;);
+          Constant c = new Constant(true);
+          ctx.assign(x,false);
+          ctx.assign(y,true);
+
+          Expression exp = new Or(new And(c,x),new And(y,new Not(x)));
+
+          System.out.println(&quot;x=&quot; + x.interpret(ctx));
+          System.out.println(&quot;y=&quot; + y.interpret(ctx));
+          System.out.println(exp.toString() + &quot;=&quot; + exp.interpret(ctx));
+      }
+  }
+</code></pre>
+</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">java-my-life</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-15
+        
+    </span>
+  </p>
+  <p class="copyright-item">
+      <span class="item-title">原始文档</span>
+      <span class="item-content"><a class="link-to-markdown" href="http://facedamon.github.io/post/design-patterns/behavior-type/interpreter/index.md" target="_blank">查看本文 Markdown 版本 »</a></span>
+    </p>
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="http://www.gnu.org/licenses/" target="_self"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)"></img></a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/design-patterns/behavior-type/templates/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">[设计模式 | 行为模式 | 模板模式]</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/design-patterns/behavior-type/observer/">
+            <span class="next-text nav-default">[设计模式 | 行为模式 |观察者模式]</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:facedamon@163.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://github.com/facedamon" class="iconfont icon-github" title="github"></a>
+  <a href="http://facedamon.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">FaceDamon</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  <script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

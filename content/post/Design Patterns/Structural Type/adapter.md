@@ -22,23 +22,23 @@ author: "java-my-life"
 - Target:所期待的接口
 - Adapee:现在需要适配的接口
 - Adapter:适配器类是本模式的核心.适配器把源接口转换成目标接口.显然,这一角色不可以是接口,而必须是具体类.
-```
-public interface Target{
-    //源类Adaptee
-    public void simpleOperation1();
-    //源类Adaptee没有的方法
-    public void simpleOperation2();
-}
-public class Adaptee{
-    public void sampleOperation1(){}
-}
-public class Adapter extends Adatee implements Target{
-    @Override
-    public void sampleOperation2(){
-        //TODO
-    }
-}
-```
+
+        public interface Target{
+           //源类Adaptee
+           public void simpleOperation1();
+           //源类Adaptee没有的方法
+           public void simpleOperation2();
+        }
+        public class Adaptee{
+           public void sampleOperation1(){}
+        }
+        public class Adapter extends Adatee implements Target{
+           @Override
+           public void sampleOperation2(){
+               //TODO
+           }
+        }
+
 
 &emsp;&emsp;对象适配器模式
 与类的适配器模式一样,对象的适配器模式把被适配的类的APi转换为目标类的API,与类的适配器模式不同的是,对象的适配器模式不是使用继承关系连接Adaptee类,而是使用委派关系连接到Adaptee类.
@@ -47,27 +47,27 @@ public class Adapter extends Adatee implements Target{
 
 &emsp;&emsp;从上图可以看出,Adaptee类并没有sampleOperation2()方法,而客户端期待这个方法.提供一个包装(Wrapper)的Adapter.这个包装类包装了一个Adaptee的实例,从而此包装类能够把Adaptee的API与Target类的APiece衔接起来.
 
-```
-public interface Target{
-    public void sampleOperation1();
-    public void sampleOperation2();
-}
-public class Adaptee {
-    public void sampleOperation1() {}
-}
-public class Adapter {
-    @Autowired
-    private Adaptee adaptee;
-​
-    public void sampleOperation1() {
-        this.adaptee.sampleOperation1();
-    }
-​
-    public void sampleOperation2(){
-        //TODO
-    }
-}
-```
+
+        public interface Target{
+           public void sampleOperation1();
+           public void sampleOperation2();
+        }
+        public class Adaptee {
+           public void sampleOperation1() {}
+        }
+        public class Adapter {
+           @Autowired
+           private Adaptee adaptee;
+        ​
+           public void sampleOperation1() {
+               this.adaptee.sampleOperation1();
+           }
+        ​
+           public void sampleOperation2(){
+               //TODO
+           }
+        }
+
 - 类适配器和对象适配器的权衡
     - 类适配器使用对象继承的方式,是静态的定义方式;而对象适配器使用组合的方式,是动态组合方式.
     - 对于类适配器,由于适配器直接继承了Adaptee,使得适配器不能和Adaptee的子类一起工作，因为继承是静态的关系,当适配器继承了Adaptee后就不可能再去处理Adaptee的子类了.
@@ -94,85 +94,84 @@ public class Adapter {
  ![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/adapter/案例图.png)
 
  - `AdvancedMediaPlayer.Interface`
-```
-public interface AdvancedMediaPlayer {
-    public void playVlc(String fileName);
-    public void playMp4(String fileName);
-}
-```
+
+        public interface AdvancedMediaPlayer {
+            public void playVlc(String fileName);
+            public void playMp4(String fileName);
+        }
+
 - `MediaPlayer.Interface`
-```
-public interface MediaPlayer {
-    public void play (String autoType,String fileName);
-}
-```
+
+        public interface MediaPlayer {
+            public void play (String autoType,String fileName);
+        }
+
 - `Mp4Player`
-```
-public class Mp4Player implements AdvancedMediaPlayer {
-    @Override
-    public void playVlc (String fileName) {
-        //NOTHING TODO
-    }
-    
-    @Override
-    public void playMp4 (String fileName) {
-        log.info("Playing mp4 file name:{}",fileName);
-    }
-}
-```
+
+        public class Mp4Player implements AdvancedMediaPlayer {
+            @Override
+            public void playVlc (String fileName) {
+                //NOTHING TODO
+            }
+            
+            @Override
+            public void playMp4 (String fileName) {
+                log.info("Playing mp4 file name:{}",fileName);
+            }
+        }
+
 - `VlcPlayer`
-```
-public class VlcPlayer implements AdvancedMediaPlayer {
-    @Override
-    public void playVlc (String fileName){
-        log.info("Playing vlc file name:{}",fileName);
-    }
-    
-    @Override
-    public void playMp4 (String fileName){
-        //NOTHING TODO
-    }
-}
-```
+
+        public class VlcPlayer implements AdvancedMediaPlayer {
+            @Override
+            public void playVlc (String fileName){
+                log.info("Playing vlc file name:{}",fileName);
+            }
+            
+            @Override
+            public void playMp4 (String fileName){
+                //NOTHING TODO
+            }
+        }
+
 - `MediaAdapter`
-```
-public class MediaAdapter implements MediaPlayer {
-    private AdvancedMediaPlayer advancedMusicPlayer;
-    
-    public MediaAdapter (String autoType) {
-        if (autoType.equalsIgnoreCase("vlc")) {
-            advancedMusicPlayer = new VlcPlayer();
-        }else if (autoType.equalsIgnoreCase("mp4")){
-            advancedMusicPlayer = new Mp4Player();
+
+        public class MediaAdapter implements MediaPlayer {
+            private AdvancedMediaPlayer advancedMusicPlayer;
+            
+            public MediaAdapter (String autoType) {
+                if (autoType.equalsIgnoreCase("vlc")) {
+                    advancedMusicPlayer = new VlcPlayer();
+                }else if (autoType.equalsIgnoreCase("mp4")){
+                    advancedMusicPlayer = new Mp4Player();
+                }
+            }
+            
+            @Override
+            public void play (String autoType, String fileName) {
+                if (autoType.equalsIgnoreCase("vlc")){
+                    advancedMusicPlayer.playVlc(fileName);
+                }else if (autoType.equalsIgnoreCase("mp4")){
+                    advancedMusicPlayer.playMp4(fileName);
+                }
+            }
         }
-    }
-    
-    @Override
-    public void play (String autoType, String fileName) {
-        if (autoType.equalsIgnoreCase("vlc")){
-            advancedMusicPlayer.playVlc(fileName);
-        }else if (autoType.equalsIgnoreCase("mp4")){
-            advancedMusicPlayer.playMp4(fileName);
-        }
-    }
-}
-```
+
 - `AudioPlayer`
-```
-public class AudioPlayer implements MediaPlayer {
-    private MediaAdapter mediaAdapter;
-    
-    @Override
-    public void play (String audioType,String fileName){
-        if (audioType.equalsIgnoreCase("mp3")){
-            log.info("Playing mp3 file name:{}",fileName);
-        }else if (audioType.equalsIgnoreCase("vlc")
-            || audioType.equalsIgnoreCase("mp4")){
-            mediaAdapter = new MediaAdapter(audioType);
-            mediaAdapter.play(audioType,fileName);
-        }else{
-            log.info("INvalid media {} format not supported",audioType);
+
+        public class AudioPlayer implements MediaPlayer {
+            private MediaAdapter mediaAdapter;
+            
+            @Override
+            public void play (String audioType,String fileName){
+                if (audioType.equalsIgnoreCase("mp3")){
+                    log.info("Playing mp3 file name:{}",fileName);
+                }else if (audioType.equalsIgnoreCase("vlc")
+                    || audioType.equalsIgnoreCase("mp4")){
+                    mediaAdapter = new MediaAdapter(audioType);
+                    mediaAdapter.play(audioType,fileName);
+                }else{
+                    log.info("INvalid media {} format not supported",audioType);
+                }
+            }
         }
-    }
-}
-```

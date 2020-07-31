@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>[设计模式 | 创建模式 | 单例模式] - FaceDamon`s Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="java-my-life" /><meta name="description" content="转载自https://www.cnblogs.com/java-my-life/ 单例类只能有一个实例 单例类必须自己创建自己的唯一实例 单例类必" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.73.0 with theme even" />
+
+
+<link rel="canonical" href="http://facedamon.github.io/post/design-patterns/creation-type/singleton/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="[设计模式 | 创建模式 | 单例模式]" />
+<meta property="og:description" content="转载自https://www.cnblogs.com/java-my-life/ 单例类只能有一个实例 单例类必须自己创建自己的唯一实例 单例类必" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://facedamon.github.io/post/design-patterns/creation-type/singleton/" />
+<meta property="article:published_time" content="2019-10-15T15:10:56+08:00" />
+<meta property="article:modified_time" content="2019-10-15T15:10:56+08:00" />
+<meta itemprop="name" content="[设计模式 | 创建模式 | 单例模式]">
+<meta itemprop="description" content="转载自https://www.cnblogs.com/java-my-life/ 单例类只能有一个实例 单例类必须自己创建自己的唯一实例 单例类必">
+<meta itemprop="datePublished" content="2019-10-15T15:10:56&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-15T15:10:56&#43;08:00" />
+<meta itemprop="wordCount" content="2022">
+
+
+
+<meta itemprop="keywords" content="设计模式," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[设计模式 | 创建模式 | 单例模式]"/>
+<meta name="twitter:description" content="转载自https://www.cnblogs.com/java-my-life/ 单例类只能有一个实例 单例类必须自己创建自己的唯一实例 单例类必"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">FaceDamon</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about-me/">
+        <li class="mobile-menu-item">About Me</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">FaceDamon</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about-me/">About Me</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">[设计模式 | 创建模式 | 单例模式]</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-10-15 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%BC%8F/"> 设计模式/创建模式 </a>
+            </div>
+          <span class="more-meta"> 约 2022 字 </span>
+          <span class="more-meta"> 预计阅读 5 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>转载自https://www.cnblogs.com/java-my-life/</p>
+</blockquote>
+<hr>
+<ul>
+<li><strong>单例类只能有一个实例</strong></li>
+<li>单例类必须自己创建自己的唯一实例</li>
+<li>单例类必须给所有其它对象提供这一实例</li>
+</ul>
+<hr>
+<ul>
+<li>
+<p><code>恶汉式单例</code>：EagerSingleton.java.在这个类被加载时，静态变量instance会被初始化，此时类的私有构造器会被调用。这时候，单例类的唯一实例就被创建出来了。恶汉式其实是一种比较形象的称谓。既然饿，那么在创建对象实例的时候就比较着急。<strong>典型的空间换时间</strong>，当类装载的时候就会创建实例，不管你用不用，先创建出来，然后每次调用的时候就不需要判断节省运行时间。</p>
+</li>
+<li>
+<p><code>懒汉式单例</code>：LazySingleton.java.对静态工厂方法使用了同步化，已处理多线程环境。<strong>典型的时间还空间</strong>，就是每次获取实例都会进行判断，看是否需要创建实例，浪费判断的时间。由于懒汉式的实现是线程安全的，这样会降低整个访问的速度，而且每次都要判断，那么有没有更好的实现方式呢？</p>
+</li>
+<li>
+<p><code>双重检查加锁</code>：Singleton.java.即实现了线程安全就能够使性能不受很大的影响。那么什么是双重检查加锁呢？指的是：并不是每次进入getInstance方法都需要同步，而是先不同步，进入方法后，先检查实例是否存在，如果不存在才进行下面的同步块，这是第一重检查，进入同步块后，再次检查实例是否存在，如果不存在，就在同步的情况下创建一个实例，这是第二重检查。这样一来，就只需要同步一次从而减少了多次在同步情况下进行判断所浪费的时间。在实现时会用关键字<code>volatile</code>，它的意思是:被volatile修饰的变量的值，将不会被本地线程缓存，<strong>所有对该变量的读写都是直接操作共享内存</strong>，从而确保多个线程能正确的处理该变量。</p>
+</li>
+<li>
+<p><strong>双重检查加锁为什么要使用volatile?</strong></p>
+</li>
+</ul>
+<ol>
+<li>
+<p>如果不适用volatile关键词看起来似乎很完美，但这是一个错误的优化，在线程执行到第一次检查位置时读取到instance不为null，此时<strong>instance引用的对象有可能还没有完成初始化</strong></p>
+</li>
+<li>
+<p>问题根源：在于第15行代码(instance = new Singleton();)创建一个对象可以分解为如下三个伪代码：</p>
+<p>2.1 memory = allocate();//分配对象的内存空间
+2.2 ctorInsatnce(memory);//初始化对象
+2.3 instance = memory;//设置instance指向刚分配的内存地址</p>
+</li>
+<li>
+<p>上面三行伪代码中的2和3之间，可能会被<code>指令重排序</code>。当声明对象的引用为volatile后，问题根源的三行伪代码中的2和3之间的重排序，在多线程环境中将会被禁止。</p>
+</li>
+</ol>
+<ul>
+<li><strong>不禁止指令重排序Lazy initialization holder class模式：</strong></li>
+</ul>
+<ol>
+<li><code>类级内部类</code>
+1.1 有static修饰的成员式内部类。如果没有static修饰的成员式内部类被称为对象级内部类。
+1.2 类级内部类相当于其外部类的static成分，它的对象与外部对象不存在依赖关系，因此可直接创建，而对于对象级内部类的实例，是绑定在外部对象实例中的</li>
+<li><code>多线程缺省同步锁的知识</code>: 在多线程开发中，为了解决并发问题，主要是通过使用synchronized来加互斥锁进行同步控制。但是在某些情况中，JVM已经隐含地为您执行了同步，这些通过不不用自己进行同步控制:
+2.1 由static初始化器(static field or static {}中的初始化器)初始化数据时
+2.2 访问final field时
+2.3 在创建线程之前创建对象时
+2.4 线程可以看见它将要处理的对象时</li>
+</ol>
+<ul>
+<li>
+<p>在这个类级内部类里面去创建对象实例。这样一来，只要不使用这个类级内部类，那就不会创建对象实例，从而同时实现延迟加载和线程安全。触发时机：当getInstance()方法第一次被调用的时候，它第一次读取SIngletonHolder,instance，导致SingletonHolder类得到初始化；而这个类在装载并被初始化的时候会初始化它的静态域，从而创建Singleton的实例，由于是静态的域,因此只会在创建虚拟机装载类的时候初始化一次，并由虚拟机来保证它的线程安全。</p>
+</li>
+<li>
+<p><strong><code>枚举</code></strong>：单元素的枚举类型已经成为实现Singleton的最佳方法。用枚举来实现单例非常简单，只需要编写一个包含单个元素的枚举类型即可。使用枚举来实现单实例控制会更加简洁，而且无偿地提供了序列化机制，并由JVM从根本上提供保障，绝对防止多次实例化，是更简洁、高效、安全的实现单例的方式</p>
+</li>
+</ul>
+<blockquote>
+<p>案例</p>
+</blockquote>
+<ul>
+<li>
+<p><code>EagerSingleton</code></p>
+<pre><code>  public class EagerSingleton{
+      private static EagerSingleton instance = new EagerSingleton();
+        
+      private EagerSingleton(){}
+        
+      public static EagerSingleton getInstance(){
+          return instance;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>LazySingleton</code></p>
+<pre><code>  public class LazySingleton{
+      private static LazySingleton instance = null;
+      private LazySingleton(){}
+        
+      public static sychronized LazySingelton getInstance(){
+          if(instace == null){
+              instance = new LazySingleton();
+          }
+          return instance;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>DoubleSync</code></p>
+<pre><code>  public class Singleton(){
+      private volatile static Singleton instance = null;
+      private Singleton(){}
+        
+      public static Singleton getInstance(){
+          /**
+          *先检查实例是否存在，如果不存在才进入下面的同步块
+          */
+          if(null == instance){
+              synchronized (Singelton.class){
+                  /**
+                  *再次检查实例是否存在，如果不存在才真正的创建实例
+                  */
+                  if(null == instance){
+                      instance = new Singleton();
+                  }
+              }
+          }
+          return instance;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>InnerClass</code></p>
+<pre><code>  public class Singleton(){
+      private Singleton(){}
+        
+      /**
+      * 类级内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例没有绑定关系，而且只有被调用到时才会装载，从而实现延迟加载
+      */
+      private static class SingletonHolder{
+          private static Singleton instance = new Singleton();//JVM来保证线程安全
+      }
+        
+      public static Singleton getInstance(){
+          return SingletonHolder.instance;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>Enum</code></p>
+<pre><code>  public enum Singleton{
+      uniqueInstance;
+        
+      public void singletonOperation(){
+          //TODO
+      }
+  }
+</code></pre>
+</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">java-my-life</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-15
+        
+    </span>
+  </p>
+  <p class="copyright-item">
+      <span class="item-title">原始文档</span>
+      <span class="item-content"><a class="link-to-markdown" href="http://facedamon.github.io/post/design-patterns/creation-type/singleton/index.md" target="_blank">查看本文 Markdown 版本 »</a></span>
+    </p>
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="http://www.gnu.org/licenses/" target="_self"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)"></img></a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/design-patterns/creation-type/static-factory/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">[设计模式 | 创建模式 | 静态工厂模式]</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/design-patterns/behavior-type/templates/">
+            <span class="next-text nav-default">[设计模式 | 行为模式 | 模板模式]</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:facedamon@163.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://github.com/facedamon" class="iconfont icon-github" title="github"></a>
+  <a href="http://facedamon.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">FaceDamon</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  <script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

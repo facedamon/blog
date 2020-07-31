@@ -24,28 +24,28 @@ author: "java-my-life"
 > 案例
 
 - `ExportFile`
-```
-public interface ExportFile {
-    boolean export(String data);
-}
-```
-- `ExportFactory`
-```
-public interface ExportFactory {
-    ExportFile factory(String type);
-}
-```
-- `ExportHtmlFactory`
-```
-public class ExportHtmlFactory implements ExportFactory {
-    public ExportFile factory(String type) {
-        if("standard".equals(type)){
-            return new ExportStandardHtmlFile();
-        }else if("financial".equals(type)){
-            return new ExportFinancialHtmlFile();
-        }else{
-            throw new RuntimeException("没有找到对象");
+
+        public interface ExportFile {
+            boolean export(String data);
         }
-    }
-}
-```
+
+- `ExportFactory`
+
+        public interface ExportFactory {
+            ExportFile factory(String type);
+        }
+
+- `ExportHtmlFactory`
+
+        public class ExportHtmlFactory implements ExportFactory {
+            public ExportFile factory(String type) {
+                if("standard".equals(type)){
+                    return new ExportStandardHtmlFile();
+                }else if("financial".equals(type)){
+                    return new ExportFinancialHtmlFile();
+                }else{
+                    throw new RuntimeException("没有找到对象");
+                }
+            }
+        }
+

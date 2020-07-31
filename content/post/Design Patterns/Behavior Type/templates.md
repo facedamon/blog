@@ -30,35 +30,35 @@ author: "java-my-life"
 - `Concrete Template(具体模板)`:实现父类所定义的一个或多个抽象方法，它们是一个顶级逻辑的组成步骤
  每一个抽象模板角色都可以有任意多个具体模板角色与之对应，而每一个具体模板角色都可以给出这些抽象方法（也就是顶级逻辑的组成步骤）的不同实现，从而使得顶级逻辑的实现各不相同
 
-```
-public abstract class AbstractTempalte{
-    public final templeteMethod(){
-        abstractMethod();
-        hookMethod();
-        concreteMethod();
-    }
-    protected abstract void abstractMethod();
-    protected void hoohMethod(){
-    }
-    private final void concreteMethod(){
-        //do some thing;
-    }
-}
-```
-```
-public class ConcreteTemplate extends AbstractTemplate{
-    //基本方法的实现
-    @Override
-    public void abstractMethod() {
-        //业务相关的代码
-    }
-    //重写父类的方法
-    @Override
-    public void hookMethod() {
-        //业务相关的代码
-    }
-}
-```
+
+        public abstract class AbstractTempalte{
+            public final templeteMethod(){
+                abstractMethod();
+                hookMethod();
+                concreteMethod();
+            }
+            protected abstract void abstractMethod();
+            protected void hoohMethod(){
+            }
+            private final void concreteMethod(){
+                //do some thing;
+            }
+        }
+
+
+        public class ConcreteTemplate extends AbstractTemplate{
+            //基本方法的实现
+            @Override
+            public void abstractMethod() {
+                //业务相关的代码
+            }
+            //重写父类的方法
+            @Override
+            public void hookMethod() {
+                //业务相关的代码
+            }
+        }
+
 - 模板方法模式中的方法：模板方法中的方法可以分为两大类：模板方法和基本方法。
 
 1. 模板方法:一个模板方法是定义在抽象类中的，把基本操作方法组合在一起形成一个总算法或一个总行为的方法；一个抽象类可以有任意多个模板方法，而不限于一个。每一个模板方法都可以调用任意多个具体方法
@@ -84,164 +84,164 @@ public class ConcreteTemplate extends AbstractTemplate{
 
 ![avatar](https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Behavior-Type/interpreter/案例图.png)
 
-```
-public abstract class Account {
-    /**
-     * 模板方法，计算利息数额
-     * @return 返回利息数额
-     */
-    public final double calculateInterest(){
-        double interestRate = doCalculateInterestRate();
-        String accountType = doCalculateAccountType();
-        double amount = calculateAmount(accountType);
-        return amount * interestRate;
-    }
-    /**
-     * 基本方法留给子类实现
-     */
-    protected abstract String doCalculateAccountType();
-    /**
-     * 基本方法留给子类实现
-     */
-    protected abstract double doCalculateInterestRate();
-    /**
-     * 基本方法，已经实现
-     */
-    private double calculateAmount(String accountType){
-        /**
-         * 省略相关的业务逻辑
-         */
-        return 7243.00;
-    }
-}
-```
-```
-public class MoneyMarketAccount extends Account {
 
-    @Override
-    protected String doCalculateAccountType() {
-        
-        return "Money Market";
-    }
+        public abstract class Account {
+            /**
+            * 模板方法，计算利息数额
+            * @return 返回利息数额
+            */
+            public final double calculateInterest(){
+                double interestRate = doCalculateInterestRate();
+                String accountType = doCalculateAccountType();
+                double amount = calculateAmount(accountType);
+                return amount * interestRate;
+            }
+            /**
+            * 基本方法留给子类实现
+            */
+            protected abstract String doCalculateAccountType();
+            /**
+            * 基本方法留给子类实现
+            */
+            protected abstract double doCalculateInterestRate();
+            /**
+            * 基本方法，已经实现
+            */
+            private double calculateAmount(String accountType){
+                /**
+                * 省略相关的业务逻辑
+                */
+                return 7243.00;
+            }
+        }
 
-    @Override
-    protected double doCalculateInterestRate() {
-        
-        return 0.045;
-    }
 
-}
-```
-```
-public class CDAccount extends Account {
+        public class MoneyMarketAccount extends Account {
 
-    @Override
-    protected String doCalculateAccountType() {
-        return "Certificate of Deposite";
-    }
+            @Override
+            protected String doCalculateAccountType() {
+                
+                return "Money Market";
+            }
 
-    @Override
-    protected double doCalculateInterestRate() {
-        return 0.06;
-    }
+            @Override
+            protected double doCalculateInterestRate() {
+                
+                return 0.045;
+            }
 
-}
-```
-```
-public class Client {
+        }
 
-    public static void main(String[] args) {
-        Account account = new MoneyMarketAccount();
-        System.out.println("货币市场账号的利息数额为：" + account.calculateInterest());
-        account = new CDAccount();
-        System.out.println("定期账号的利息数额为：" + account.calculateInterest());
-    }
 
-}
-```
+        public class CDAccount extends Account {
+
+            @Override
+            protected String doCalculateAccountType() {
+                return "Certificate of Deposite";
+            }
+
+            @Override
+            protected double doCalculateInterestRate() {
+                return 0.06;
+            }
+
+        }
+
+
+        public class Client {
+
+            public static void main(String[] args) {
+                Account account = new MoneyMarketAccount();
+                System.out.println("货币市场账号的利息数额为：" + account.calculateInterest());
+                account = new CDAccount();
+                System.out.println("定期账号的利息数额为：" + account.calculateInterest());
+            }
+
+        }
+
 
 > servlet 应用
 
 - 使用过Servlet的人都清楚，除了要在web.xml做相应的配置外，还需继承一个叫HttpServlet的抽象类。HttpService类提供了一个service()方法，这个方法调用七个do方法中的一个或几个，完成对客户端调用的响应。这些do方法需要由HttpServlet的具体子类提供，因此这是典型的模板方法模式。下面是service()方法的源代码
 
-```
-protected void service(HttpServletRequest req, HttpServletResponse resp)
-        throws ServletException, IOException {
 
-        String method = req.getMethod();
+        protected void service(HttpServletRequest req, HttpServletResponse resp)
+                throws ServletException, IOException {
 
-        if (method.equals(METHOD_GET)) {
-            long lastModified = getLastModified(req);
-            if (lastModified == -1) {
-                // servlet doesn't support if-modified-since, no reason
-                // to go through further expensive logic
-                doGet(req, resp);
-            } else {
-                long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
-                if (ifModifiedSince < (lastModified / 1000 * 1000)) {
-                    // If the servlet mod time is later, call doGet()
-                    // Round down to the nearest second for a proper compare
-                    // A ifModifiedSince of -1 will always be less
+                String method = req.getMethod();
+
+                if (method.equals(METHOD_GET)) {
+                    long lastModified = getLastModified(req);
+                    if (lastModified == -1) {
+                        // servlet doesn't support if-modified-since, no reason
+                        // to go through further expensive logic
+                        doGet(req, resp);
+                    } else {
+                        long ifModifiedSince = req.getDateHeader(HEADER_IFMODSINCE);
+                        if (ifModifiedSince < (lastModified / 1000 * 1000)) {
+                            // If the servlet mod time is later, call doGet()
+                            // Round down to the nearest second for a proper compare
+                            // A ifModifiedSince of -1 will always be less
+                            maybeSetLastModified(resp, lastModified);
+                            doGet(req, resp);
+                        } else {
+                            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                        }
+                    }
+
+                } else if (method.equals(METHOD_HEAD)) {
+                    long lastModified = getLastModified(req);
                     maybeSetLastModified(resp, lastModified);
-                    doGet(req, resp);
+                    doHead(req, resp);
+
+                } else if (method.equals(METHOD_POST)) {
+                    doPost(req, resp);
+                    
+                } else if (method.equals(METHOD_PUT)) {
+                    doPut(req, resp);        
+                    
+                } else if (method.equals(METHOD_DELETE)) {
+                    doDelete(req, resp);
+                    
+                } else if (method.equals(METHOD_OPTIONS)) {
+                    doOptions(req,resp);
+                    
+                } else if (method.equals(METHOD_TRACE)) {
+                    doTrace(req,resp);
+                    
                 } else {
-                    resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    //
+                    // Note that this means NO servlet supports whatever
+                    // method was requested, anywhere on this server.
+                    //
+
+                    String errMsg = lStrings.getString("http.method_not_implemented");
+                    Object[] errArgs = new Object[1];
+                    errArgs[0] = method;
+                    errMsg = MessageFormat.format(errMsg, errArgs);
+                    
+                    resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
                 }
             }
 
-        } else if (method.equals(METHOD_HEAD)) {
-            long lastModified = getLastModified(req);
-            maybeSetLastModified(resp, lastModified);
-            doHead(req, resp);
 
-        } else if (method.equals(METHOD_POST)) {
-            doPost(req, resp);
-            
-        } else if (method.equals(METHOD_PUT)) {
-            doPut(req, resp);        
-            
-        } else if (method.equals(METHOD_DELETE)) {
-            doDelete(req, resp);
-            
-        } else if (method.equals(METHOD_OPTIONS)) {
-            doOptions(req,resp);
-            
-        } else if (method.equals(METHOD_TRACE)) {
-            doTrace(req,resp);
-            
-        } else {
-            //
-            // Note that this means NO servlet supports whatever
-            // method was requested, anywhere on this server.
-            //
+        public class TestServlet extends HttpServlet {
 
-            String errMsg = lStrings.getString("http.method_not_implemented");
-            Object[] errArgs = new Object[1];
-            errArgs[0] = method;
-            errMsg = MessageFormat.format(errMsg, errArgs);
-            
-            resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
+            public void doGet(HttpServletRequest request, HttpServletResponse response)
+                    throws ServletException, IOException {
+                
+                System.out.println("using the GET method");
+
+            }
+
+            public void doPost(HttpServletRequest request, HttpServletResponse response)
+                    throws ServletException, IOException {
+                    
+                System.out.println("using the POST method");
+            }
+
         }
-    }
-```
-```
-public class TestServlet extends HttpServlet {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        System.out.println("using the GET method");
-
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-            
-        System.out.println("using the POST method");
-    }
-
-}
-```
 > 场景
 
 - 优点

@@ -36,200 +36,180 @@ author: "facedamon"
 
 </br>
 
-```
-# useradd -d /home/ddd -s /bin/bash ddd
-# su - ddd
-$ wget https://github.com/prometheus/prometheus/releases/download/v2.19.2/prometheus-2.19.2.linux-amd64.tar.gz
-$ wget https://github.com/prometheus/alertmanager/releases/download/v0.21.0/alertmanager-0.21.0.linux-amd64.tar.gz
-$ wget https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
-$ for i in (ls *.tar.gz);do tar -zxvf $i;done
-$ wget https://dl.grafana.com/oss/release/grafana-7.0.4-1.x86_64.rpm
-$ sudo yum install grafana-7.0.4-1.x86_64.rpm
-```
+		# useradd -d /home/ddd -s /bin/bash ddd
+		# su - ddd
+		$ wget https://github.com/prometheus/prometheus/releases/download/v2.19.2/prometheus-2.19.2.linux-amd64.tar.gz
+		$ wget https://github.com/prometheus/alertmanager/releases/download/v0.21.0/alertmanager-0.21.0.linux-amd64.tar.gz
+		$ wget https://github.com/prometheus/node_exporter/releases/download/v1.0.1/node_exporter-1.0.1.linux-amd64.tar.gz
+		$ for i in (ls *.tar.gz);do tar -zxvf $i;done
+		$ wget https://dl.grafana.com/oss/release/grafana-7.0.4-1.x86_64.rpm
+		$ sudo yum install grafana-7.0.4-1.x86_64.rpm
 
 </br>
 
 # prometheus 配置
 </br>
 
-```
-$ cd /home/ddd/prometheus-2.19.1.linux-amd64
-$ vim prometheus.yml
-```
-```
-# my global config
-global:
-  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
-# Alertmanager configuration
-alerting:
-  alertmanagers:
-  - static_configs:
-    - targets: ['127.0.0.1:9093']
-      # - alertmanager:9093
-# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
-rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
-  - /home/ddd/prometheus-2.19.1.linux-amd64/rules/*.rules
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
-scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'prometheus'
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-    scrape_interval: 5s
-    static_configs:
-    - targets: ['127.0.0.1:9090']
-  # operating system
-  - job_name: 'OS'
-    scrape_interval: 3s
-    static_configs:
-        - targets: ['127.0.0.1:9100']
-  # mysqld
-  # - job_name: 'mysqld'
-  #  static_configs:
-  #      - targets: ['127.0.0.1:9104']
-```
-```
-$ mkdir rules && cd rules
-$ vim hoststats-alert.rules
-```
-```
- groups:
- - name: memoryrules
-   rules:
-   - alert: MemoryUsageTooHigh
-     expr: (1-node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes) * 100 > 85
-     for: 5m
-     labels:
-       #team: node
-       severity: warning
-       action: text
-       kind: node_export
-     annotations:
-       summary: "{{$labels.instance}}: Memory usage is too high"
-       description: "{{$labels.instance}}: job {{$labels.job}} memory usage is more than 85% last 5min "
-       value: "{{$value}}"
- - name: cpurules
-   rules:
-   - alert: CpuUsageTooHigh
-     expr: 100-avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by(instance)*100 > 80
-     for: 1m
-     labels:
-       severity: warning
-     annotations:
-       summary: "Instance {{ $labels.instance }} cpu使用率过高"
-       description: "{{ $labels.instance }} of job {{ $labels.job }}cpu使用率超过80%,当前使用率[{{ $value }}]."
-```
+		$ cd /home/ddd/prometheus-2.19.1.linux-amd64
+		$ vim prometheus.yml
+		# my global config
+		global:
+		  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+		  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+		  # scrape_timeout is set to the global default (10s).
+		# Alertmanager configuration
+		alerting:
+		  alertmanagers:
+		  - static_configs:
+		    - targets: ['127.0.0.1:9093']
+		      # - alertmanager:9093
+		# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+		rule_files:
+		  # - "first_rules.yml"
+		  # - "second_rules.yml"
+		  - /home/ddd/prometheus-2.19.1.linux-amd64/rules/*.rules
+		# A scrape configuration containing exactly one endpoint to scrape:
+		# Here it's Prometheus itself.
+		scrape_configs:
+		  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+		  - job_name: 'prometheus'
+		    # metrics_path defaults to '/metrics'
+		    # scheme defaults to 'http'.
+		    scrape_interval: 5s
+		    static_configs:
+		    - targets: ['127.0.0.1:9090']
+		  # operating system
+		  - job_name: 'OS'
+		    scrape_interval: 3s
+		    static_configs:
+		        - targets: ['127.0.0.1:9100']
+		  # mysqld
+		  # - job_name: 'mysqld'
+		  #  static_configs:
+		  #      - targets: ['127.0.0.1:9104']
+		$ mkdir rules && cd rules
+		$ vim hoststats-alert.rules
+		 groups:
+		 - name: memoryrules
+		   rules:
+		   - alert: MemoryUsageTooHigh
+		     expr: (1-node_memory_MemAvailable_bytes/node_memory_MemTotal_bytes) * 100 > 85
+		     for: 5m
+		     labels:
+		       #team: node
+		       severity: warning
+		       action: text
+		       kind: node_export
+		     annotations:
+		       summary: "{{$labels.instance}}: Memory usage is too high"
+		       description: "{{$labels.instance}}: job {{$labels.job}} memory usage is more than 85% last 5min "
+		       value: "{{$value}}"
+		 - name: cpurules
+		   rules:
+		   - alert: CpuUsageTooHigh
+		     expr: 100-avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) by(instance)*100 > 80
+		     for: 1m
+		     labels:
+		       severity: warning
+		     annotations:
+		       summary: "Instance {{ $labels.instance }} cpu使用率过高"
+		       description: "{{ $labels.instance }} of job {{ $labels.job }}cpu使用率超过80%,当前使用率[{{ $value }}]."
 </br>
 
 # AlertManager 配置
 </br>
 
-```
-$ cd /home/ddd/alertmanager-0.21.0.linux-amd64
-$ vim alertmanager.yml
-```
-```
-global:
-  resolve_timeout: 5m
-  smtp_smarthost: smtp.263.net:25
-  smtp_from: th@ddddian.com
-  smtp_auth_username: th@ddddian.com
-  smtp_auth_identity: th@ddddian.com
-  smtp_auth_password: ******
-templates:
-  - 'template/*.tmpl'
-route:
-  group_by: ['alertname']
-  group_wait: 10s
-  group_interval: 10s
-  repeat_interval: 1m
-  receiver: 'default-receiver'
-  routes:
-  - receiver: 'os-pager'
-    group_wait: 10s
-    match_re:
-      service: cpu|mem|network
-  - receiver: 'database-pager'
-    group_wait: 10s
-    match_re:
-      service: mysql|mariadb
- # - receiver: 'frontend-pager'
- #   group_by: [product, environment]
- #   match:
- #     team: frontend
-receivers:
-  - name: 'default-receiver'
-    email_configs:
-    - to: 'tsq@ddddian.com'
-      require_tls: false
-      html: '{{ template "test.html" . }}'
-      headers: { Subject: "[WARNING] Alertmanager 告警提醒" }
-  - name: 'os-pager'
-    email_configs:
-    - to: 'tsq@ddddian.com'
-      require_tls: false
-   #   html:
-   #   headers:
-  - name: 'database-pager'
-    email_configs:
-    - to: 'tsq@ddddian.com'
-      require_tls: false
-   #   html:
-   #   headers:
-inhibit_rules:
-  - source_match:
-       severity: 'critical'
-    target_match:
-       severity: 'warning'
-    equal: ['alertname', 'dev', 'instance']
-```
-```
-$ mkdir template && cd template
-$ vim hoststats-alert.tmpl
-```
-```
-{{ define "test.html" }}
- <table border="1">
-         <tr>
-                 <td>报警项</td>
-                 <td>实例IP</td>
-                 <td>报警阀值</td>
-                 <td>开始时间</td>
-         </tr>
-         {{ range $i, $alert := .Alerts }}
-                 <tr>
-                         <td>{{ index $alert.Labels "alertname" }}</td>
-                         <td>{{ index $alert.Labels "instance" }}</td>
-                         <td>{{ index $alert.Annotations "description" }}</td>
-                         <td>{{ ($alert.StartsAt.Add 28800e9).Format "2006-02-02 15:04:05" }}</td>
-                 </tr>
-         {{ end }}
- </table>
- {{ end }}
-```
+		$ cd /home/ddd/alertmanager-0.21.0.linux-amd64
+		$ vim alertmanager.yml
+		global:
+		  resolve_timeout: 5m
+		  smtp_smarthost: smtp.263.net:25
+		  smtp_from: th@ddddian.com
+		  smtp_auth_username: th@ddddian.com
+		  smtp_auth_identity: th@ddddian.com
+		  smtp_auth_password: ******
+		templates:
+		  - 'template/*.tmpl'
+		route:
+		  group_by: ['alertname']
+		  group_wait: 10s
+		  group_interval: 10s
+		  repeat_interval: 1m
+		  receiver: 'default-receiver'
+		  routes:
+		  - receiver: 'os-pager'
+		    group_wait: 10s
+		    match_re:
+		      service: cpu|mem|network
+		  - receiver: 'database-pager'
+		    group_wait: 10s
+		    match_re:
+		      service: mysql|mariadb
+		 # - receiver: 'frontend-pager'
+		 #   group_by: [product, environment]
+		 #   match:
+		 #     team: frontend
+		receivers:
+		  - name: 'default-receiver'
+		    email_configs:
+		    - to: 'tsq@ddddian.com'
+		      require_tls: false
+		      html: '{{ template "test.html" . }}'
+		      headers: { Subject: "[WARNING] Alertmanager 告警提醒" }
+		  - name: 'os-pager'
+		    email_configs:
+		    - to: 'tsq@ddddian.com'
+		      require_tls: false
+		   #   html:
+		   #   headers:
+		  - name: 'database-pager'
+		    email_configs:
+		    - to: 'tsq@ddddian.com'
+		      require_tls: false
+		   #   html:
+		   #   headers:
+		inhibit_rules:
+		  - source_match:
+		       severity: 'critical'
+		    target_match:
+		       severity: 'warning'
+		    equal: ['alertname', 'dev', 'instance']
+		$ mkdir template && cd template
+		$ vim hoststats-alert.tmpl
+		{{ define "test.html" }}
+		 <table border="1">
+		         <tr>
+		                 <td>报警项</td>
+		                 <td>实例IP</td>
+		                 <td>报警阀值</td>
+		                 <td>开始时间</td>
+		         </tr>
+		         {{ range $i, $alert := .Alerts }}
+		                 <tr>
+		                         <td>{{ index $alert.Labels "alertname" }}</td>
+		                         <td>{{ index $alert.Labels "instance" }}</td>
+		                         <td>{{ index $alert.Annotations "description" }}</td>
+		                         <td>{{ ($alert.StartsAt.Add 28800e9).Format "2006-02-02 15:04:05" }}</td>
+		                 </tr>
+		         {{ end }}
+		 </table>
+		 {{ end }}
 </br>
 
 # 启动服务
 </br>
 
-```
-$ cd /home/ddd/prometheus-2.19.1.linux-amd64
-$ nohup ./prometheus &
-$ cd /home/ddd/alertmanager-0.21.0.linux-amd64
-$ nohup ./alertmanager &
-$ cd /home/ddd/node_exporter-1.0.1.linux-amd64
-$ nohup ./node_exporter
-$ sudo systemctl status grafana-server.service
-$ sudo systemctl restart grafana-server.service
-$ sudo firewall-cmd --zone=public --add-port=3000/tcp --permanent
-$ sudo firewall-cmd --zone=public --add-port=9090/tcp --permanent
-$ sudo firewall-cmd --reload
-```
+		$ cd /home/ddd/prometheus-2.19.1.linux-amd64
+		$ nohup ./prometheus &
+		$ cd /home/ddd/alertmanager-0.21.0.linux-amd64
+		$ nohup ./alertmanager &
+		$ cd /home/ddd/node_exporter-1.0.1.linux-amd64
+		$ nohup ./node_exporter
+		$ sudo systemctl status grafana-server.service
+		$ sudo systemctl restart grafana-server.service
+		$ sudo firewall-cmd --zone=public --add-port=3000/tcp --permanent
+		$ sudo firewall-cmd --zone=public --add-port=9090/tcp --permanent
+		$ sudo firewall-cmd --reload
 </br>
 
 # 面板配置
@@ -280,9 +260,7 @@ $ sudo firewall-cmd --reload
 # 测试预警
 
 &emsp;&emsp;登入该主机，手动执行以下shell来拉高CPU占用率。（该语句的含义是遍历主机的每一个CPU，让其都循环加载磁盘。请勿长时间运行）
-```
-$ for i in `seq 1 $(cat /proc/cpuinfo |grep "physical id" |wc -l)`; do dd if=/dev/zero of=/dev/null & done
-```
+		$ for i in `seq 1 $(cat /proc/cpuinfo |grep "physical id" |wc -l)`; do dd if=/dev/zero of=/dev/null & done
 </br>
 
 &emsp;&emsp;检查一下配置的接收邮箱。
@@ -294,6 +272,4 @@ $ for i in `seq 1 $(cat /proc/cpuinfo |grep "physical id" |wc -l)`; do dd if=/de
 
 > 别忘了关闭拉高CPU的线程
 
-```
-$ killall dd
-```
+		$ killall dd

@@ -74,75 +74,75 @@ author: "java-my-life"
 
 - 要想解决这个问题，就必须把这两个纬度分开，也就是将抽象部分和实现部分分开，让它们相互独立，这样就可以实现独立的变化，使扩展变得简单。抽象部分就是各个消息的类型所对应的功能，而实现部分就是各种发送消息的方式。按照桥梁模式的结构，给抽象部分和实现部分分别定义接口，然后分别实现它们就可以了(**封装不变的，开放变化的**)
 
-```
-public interface MessageImplementor{
-    send (String message,String toUser);
-}
-```
-```
-public class MessageSMS implements MessageImplementor{
-    @Override
-    public void send(String message,String toUser){
-        sout("使用系统内短消息的方法，发送消息'"+message+"'给"+toUser);
-    }
-}
-```
-```
-public class MessageEmail implements MessageImplementor{
-    @Override
-    public void send(String message,String toUser){
-        sout("使用邮件短消息的方法，发送消息'"+message+"'给"+toUser);
-    }
-}
-```
-```
-public abstract class AbstractMessage{
-    MessageImplementor impl;
-    public AbstractMessage(MessageImplementor imple){
-        this.impl = impl;
-    }
-    
-    //委派
-    public void sendMessage(String message,String toUser){
-        this.impl.send(message,toUser);
-    }
-}
-```
-```
-public class CommonMessage extends AbstractMessage {
 
-    public CommonMessage(MessageImplementor impl) {
-        super(impl);
-    }
-    @Override
-    public void sendMessage(String message, String toUser) {
-        // 对于普通消息，直接调用父类方法，发送消息即可
-        super.sendMessage(message, toUser);
-    }
-}
-```
-```
-public class UrgencyMessage extends AbstractMessage {
+        public interface MessageImplementor{
+            send (String message,String toUser);
+        }
 
-    public UrgencyMessage(MessageImplementor impl) {
-        super(impl);
-    }
-    @Override
-    public void sendMessage(String message, String toUser) {
-        message = "加急：" + message;
-        super.sendMessage(message, toUser);
-    }
-    /**
-     * 扩展自己的新功能，监控某消息的处理状态
-     * @param messageId 被监控的消息编号
-     * @return 监控到的消息的处理状态
-     */
-    public Object watch(String messageId) {
-        // 根据消息id获取消息的状态，组织成监控的数据对象，然后返回
-        return null;
-    }
-}
-```
+
+        public class MessageSMS implements MessageImplementor{
+            @Override
+            public void send(String message,String toUser){
+                sout("使用系统内短消息的方法，发送消息'"+message+"'给"+toUser);
+            }
+        }
+
+
+        public class MessageEmail implements MessageImplementor{
+            @Override
+            public void send(String message,String toUser){
+                sout("使用邮件短消息的方法，发送消息'"+message+"'给"+toUser);
+            }
+        }
+
+
+        public abstract class AbstractMessage{
+            MessageImplementor impl;
+            public AbstractMessage(MessageImplementor imple){
+                this.impl = impl;
+            }
+            
+            //委派
+            public void sendMessage(String message,String toUser){
+                this.impl.send(message,toUser);
+            }
+        }
+
+
+        public class CommonMessage extends AbstractMessage {
+
+            public CommonMessage(MessageImplementor impl) {
+                super(impl);
+            }
+            @Override
+            public void sendMessage(String message, String toUser) {
+                // 对于普通消息，直接调用父类方法，发送消息即可
+                super.sendMessage(message, toUser);
+            }
+        }
+
+
+        public class UrgencyMessage extends AbstractMessage {
+
+            public UrgencyMessage(MessageImplementor impl) {
+                super(impl);
+            }
+            @Override
+            public void sendMessage(String message, String toUser) {
+                message = "加急：" + message;
+                super.sendMessage(message, toUser);
+            }
+            /**
+            * 扩展自己的新功能，监控某消息的处理状态
+            * @param messageId 被监控的消息编号
+            * @return 监控到的消息的处理状态
+            */
+            public Object watch(String messageId) {
+                // 根据消息id获取消息的状态，组织成监控的数据对象，然后返回
+                return null;
+            }
+        }
+
 > JDBC桥梁模式
 
 - 桥梁模式在Java应用中的一个非常典型的例子就是JDBC驱动器。JDBC为所有的关系型数据库提供一个通用的界面。一个应用系统动态地选择一个合适的驱动器，然后通过驱动器向数据库引擎发出指令。这个过程就是将抽象角色的行为委派给实现角色的过程。

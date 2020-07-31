@@ -23,48 +23,48 @@ author: "java-my-life"
 - `Decorator(装饰角色)`:持有一个构件对象的实例,并定义一个与抽象构件接口一致的接口
 - `ConcreteDecorator(具体装饰)`:负责给构件对象贴上附加的责任
 
-```
-public interface Component{
-    public void sampleOperation();
-}
-```
 
-```
-public class ConcreteComponent implements Component{
-    @Override
-    public void sampleOperation(){
-        // TODO
-    }
-}
-```
-```
-public class Decorator implements Component{
-    private Component component;
-    
-    public Decorator (Component component){
-        this.component = component;
-    }
-    
-    @Override
-    public void sampleOperation(){
-        //委派给构件
-        component.sampleOperation();
-    }
-}
-```
-```
-public class ConcreteDecoratorA extends Decorator{
-    public ConcreteDecoratorA(Component component){
-        super(component);
-    }
-    
-    @Override
-    public void sampleOperation(){
-        super.sampleOperation();
-        // Extract TODO
-    }
-}
-```
+        public interface Component{
+            public void sampleOperation();
+        }
+
+
+
+        public class ConcreteComponent implements Component{
+            @Override
+            public void sampleOperation(){
+                // TODO
+            }
+        }
+
+
+        public class Decorator implements Component{
+            private Component component;
+            
+            public Decorator (Component component){
+                this.component = component;
+            }
+            
+            @Override
+            public void sampleOperation(){
+                //委派给构件
+                component.sampleOperation();
+            }
+        }
+
+
+        public class ConcreteDecoratorA extends Decorator{
+            public ConcreteDecoratorA(Component component){
+                super(component);
+            }
+            
+            @Override
+            public void sampleOperation(){
+                super.sampleOperation();
+                // Extract TODO
+            }
+        }
+
 
 - 装饰模式的简化
     - 如果只有一个ConcreteComponent类,那么可以考虑去掉抽象的Component接口,把Decorator作为一个ConcreteComponent子类

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>[设计模式 | 结构模式 | 合成模式] - FaceDamon`s Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="java-my-life" /><meta name="description" content="转载自https://www.cnblogs.com/java-my-life/ 合成模式属于对象的结构模式,有时又叫做&amp;rsquo;部分-整" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.73.0 with theme even" />
+
+
+<link rel="canonical" href="http://facedamon.github.io/post/design-patterns/structural-type/composite/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="[设计模式 | 结构模式 | 合成模式]" />
+<meta property="og:description" content="转载自https://www.cnblogs.com/java-my-life/ 合成模式属于对象的结构模式,有时又叫做&rsquo;部分-整" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://facedamon.github.io/post/design-patterns/structural-type/composite/" />
+<meta property="article:published_time" content="2019-10-16T09:46:56+08:00" />
+<meta property="article:modified_time" content="2019-10-16T09:46:56+08:00" />
+<meta itemprop="name" content="[设计模式 | 结构模式 | 合成模式]">
+<meta itemprop="description" content="转载自https://www.cnblogs.com/java-my-life/ 合成模式属于对象的结构模式,有时又叫做&rsquo;部分-整">
+<meta itemprop="datePublished" content="2019-10-16T09:46:56&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-16T09:46:56&#43;08:00" />
+<meta itemprop="wordCount" content="1509">
+
+
+
+<meta itemprop="keywords" content="设计模式," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[设计模式 | 结构模式 | 合成模式]"/>
+<meta name="twitter:description" content="转载自https://www.cnblogs.com/java-my-life/ 合成模式属于对象的结构模式,有时又叫做&rsquo;部分-整"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">FaceDamon</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about-me/">
+        <li class="mobile-menu-item">About Me</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">FaceDamon</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about-me/">About Me</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">[设计模式 | 结构模式 | 合成模式]</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-10-16 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E7%BB%93%E6%9E%84%E6%A8%A1%E5%BC%8F/"> 设计模式/结构模式 </a>
+            </div>
+          <span class="more-meta"> 约 1509 字 </span>
+          <span class="more-meta"> 预计阅读 4 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>转载自https://www.cnblogs.com/java-my-life/</p>
+</blockquote>
+<hr>
+<ul>
+<li>合成模式属于对象的结构模式,有时又叫做&rsquo;部分-整体&rsquo;模式.合成模式将对象组织到数结构中,可以用来描述整体与部分的关系.合成模式可以使客户端将单纯元素与复合元素同等看待.</li>
+<li>文件系统是一个树形结构,树上长有节点.树的节点有两种,一种是树枝节点,有内部树结构;另一种是文件,即树叶节点,没有内部树结构.</li>
+<li>合成模式可以不提供父对象的管理方法,但是合成模式必须在合适的地方提供子对象的管理方法,add,remove,getChild 等.</li>
+<li>合成模式的实现根据所实现接口的区别分为两种形式,分别称为安全式和透明式.</li>
+<li>安全式合成模式:要求管理聚集的方法只出现在树枝构件类中,而不出现在树叶构件类中.</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Structural-Type/composite/%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt="avatar"></p>
+<ul>
+<li>
+<p>Component(抽象构件):它给参加组合的对象定义出公共的接口及其默认行为,可以用来管理所有的子对象.合成对象通常把它所包含的子对象当作类型为Component的对象.在安全的合成模式,构件角色并不定义出管理子对象的方法,这一定义由树枝构件对象给出.</p>
+</li>
+<li>
+<p>Left(树叶构件):树叶对象是没有下级子对象,定义出参加组合的原始对象的行为.</p>
+</li>
+<li>
+<p>Composite(树枝构件):代表参加组合的有下级子对象.树枝构件类给出所有的管理子对象的方法.</p>
+<pre><code>  public interface Component{
+      public void printStruct(String preStr);
+  }
+
+
+
+  public class Composite implements Component{
+      private List&lt;Component&gt; childComponents = new ArrayList&lt;Component&gt;();
+        
+      private String name;
+        
+      public Composite(String name){
+          this.name = name;
+      }
+        
+      public void addChild(Component child){
+          childComponents.add(child);
+      }
+        
+      public void removeChild(int index){
+          childComponents.remove(index);
+      }
+        
+      public List&lt;Component&gt; getChild(){
+          return childComponents;
+      }
+        
+      @Override
+      public void printStruct(String preStr){
+          log.info(preStr + &quot;+&quot; + this.name);
+          if (this.childComponents != null){
+              preStr += &quot; &quot;;
+              for (Component c : childComponents){
+                  //递归输出每个子对象
+                  c.printStruct(preStr);
+              }
+          }
+      }
+  }
+
+
+
+  public class Leaf implements Component{
+      private String name;
+        
+      public Leaf(String name){
+          this.name = name;
+      }
+        
+      @Override
+      public void printStruct(String preStr) {
+          System.out.println(preStr + &quot;-&quot; + name);
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p>可以看出,Composite给出了add,remove,get等方法的声明和实现,而Leaf构件类则没有给出这些方法或实现.这样的做法是安全的做法,由于这个特点,客户端应用程序不可能错误地调用树叶构件的聚集方法,因为树叶构件没有这些方法,调用会导致编译错误</p>
+</li>
+<li>
+<p>透明式合成模式(与安全式的合成模式不同的是,透明式的合成模式要求所有具体构件类,不论树枝构件还是树叶构件,均符合一个固定接口)</p>
+<pre><code>  public abstract class Component{
+      public abstract void printStruct(String preStr);
+  }
+
+  public void addChild(Component child){
+      throw new UnsupportedOperationException(&quot;对象不支持此操作&quot;);
+  }
+
+  public void removeChild(int index){
+      throw new UnsupportedOperationException(&quot;对象不支持此操作&quot;);
+  }
+
+  public List&lt;Component&gt; getChild(){
+      throw new UnsupportedOperationException(&quot;对象不支持此操作&quot;);
+  }
+
+
+  public class Composite extends Component{
+      private List&lt;Component&gt; childComponents = new ArraysList&lt;Component&gt;();
+        
+      private String name;
+      public Composite(String name){
+          this.name = name;
+      }
+        
+      public void addChild(Component child){
+          childComponents.add(child);
+      }
+        
+      public void removeChild(int index){
+          childComponents.remove(index);
+      }
+        
+      public List&lt;Component&gt; getChild(){
+          return childComponents;
+      }
+        
+      @Override
+      public void printStruct(String preStr){
+          log.info(preStr + &quot;+&quot; + this.name);
+          if (this.childComponents != null){
+              preStr += &quot; &quot;;
+              for (Component c : childComponents){
+                  c.printStruct(preStr);
+              }
+          }
+      }
+  }
+
+
+  public class Leaf extends Component{
+      private String name;
+      public Leaf(String name){
+          this.name = name;
+      }
+        
+      @Override
+      public void printStruct(String preStr){
+          log.info(preStr + &quot;-&quot; + name);
+      }
+  }
+</code></pre>
+</li>
+</ul>
+<blockquote>
+<p>区别</p>
+</blockquote>
+<ul>
+<li>这里所说的安全性合成模式是指：从客户端使用合成模式上看是不再安全,如果是安全的,那么就不会发生误操作的可能,能访问的方法都是被支持的.</li>
+<li>这里所说的透明性合成模式是指:从客户端使用合成模式上,是否需要区分到底是&quot;树枝对象&quot;还是&quot;树叶对象&rdquo;.如果是透明的,那就不用区分对于客户而言,都是Component对象,具体的类型对于客户端而言是透明的,是无需关心的</li>
+<li>对于合成模式而言,在安全性和透明性上,回更看重透明性,毕竟合成模式的目的是:让客户端不再区分操作的是树枝还是树叶对象,而是一个统一的方法来操作.</li>
+<li>而且对于安全性的实现,需要区分是树枝对象还是树叶对象.有时候需要将对象进行类型转换,却发现类型信息丢失,只好强制转换,这种类型转换必然是不安全的.</li>
+<li>因此在使用合成模式的时候,建议多采用透明性的实现方式</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">java-my-life</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-16
+        
+    </span>
+  </p>
+  <p class="copyright-item">
+      <span class="item-title">原始文档</span>
+      <span class="item-content"><a class="link-to-markdown" href="http://facedamon.github.io/post/design-patterns/structural-type/composite/index.md" target="_blank">查看本文 Markdown 版本 »</a></span>
+    </p>
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="http://www.gnu.org/licenses/" target="_self"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)"></img></a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/design-patterns/structural-type/adapter/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">[设计模式 | 结构模式 | 适配器模式]</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/design-patterns/structural-type/proxy/">
+            <span class="next-text nav-default">[设计模式 | 结构模式 | 代理模式]</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:facedamon@163.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://github.com/facedamon" class="iconfont icon-github" title="github"></a>
+  <a href="http://facedamon.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">FaceDamon</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  <script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

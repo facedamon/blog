@@ -30,44 +30,44 @@ author: "java-my-life"
 
 > 案例
 
-```
-public interface Flyweight{
-    public void operation(String state);
-}
-```
 
-```
-public class ConcreteFlyweight impmelemts Flyweight{
-    private final Character internal = null;
-    
-    public ConcreteFlyweight(Character internal){
-        this.internal = internal;
-    }
-    
-    /**
-    *外蕴状态作为参数传入方法中，改变方法的行为
-    */
-    @Override
-    public void operation(String state){
-        sout("internal state=" + this.internal);
-        sout("external state=" + state);
-    }
-}
-```
-```
-public class FlyweightFactory{
-    private final Map<Character,Flyweight> files = new HashMap();
-    
-    public Flyweight factory(Character state){
-        Flyweight fly = files.get(state);
-        if (null == fly){
-            fly = new ConcreteFlyweight(state);
-            files.put(state,fly);
+        public interface Flyweight{
+            public void operation(String state);
         }
-        return fly;
-    }
-}
-```
+
+
+
+        public class ConcreteFlyweight impmelemts Flyweight{
+            private final Character internal = null;
+            
+            public ConcreteFlyweight(Character internal){
+                this.internal = internal;
+            }
+            
+            /**
+            *外蕴状态作为参数传入方法中，改变方法的行为
+            */
+            @Override
+            public void operation(String state){
+                sout("internal state=" + this.internal);
+                sout("external state=" + state);
+            }
+        }
+
+
+        public class FlyweightFactory{
+            private final Map<Character,Flyweight> files = new HashMap();
+            
+            public Flyweight factory(Character state){
+                Flyweight fly = files.get(state);
+                if (null == fly){
+                    fly = new ConcreteFlyweight(state);
+                    files.put(state,fly);
+                }
+                return fly;
+            }
+        }
+
 
 
 

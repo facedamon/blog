@@ -36,52 +36,52 @@ author: "java-my-life"
 > 案例
 
 - `Builder.Interface`
-```
-public interface Builder{
-    public void builderPartOne();
-    public void builderPartTwo();
-    public Product retrieveResult();
-}
-```
+
+        public interface Builder{
+            public void builderPartOne();
+            public void builderPartTwo();
+            public Product retrieveResult();
+        }
+
 - `Product`
-```
-public class Product{
-    private String partOne;
-    private String partTwo;
-    
-    //setter/getter method
-}
-```
+
+        public class Product{
+            private String partOne;
+            private String partTwo;
+            
+            //setter/getter method
+        }
+
 - `ConcreteBuilder`
-```
-public class ConcreteBuilder implements Builder{
-    private Product product = new Product();
-    
-    public void builderPartOne(){
-        product.setPartOne("uuid:9527");
-    }
-    
-    public void builderPartTwo(){
-        product.setPartTwo("name:iphoneX");
-    }
-    
-    public Product retrieveResult(){
-        return product;
-    }
-}
-```
+
+        public class ConcreteBuilder implements Builder{
+            private Product product = new Product();
+            
+            public void builderPartOne(){
+                product.setPartOne("uuid:9527");
+            }
+            
+            public void builderPartTwo(){
+                product.setPartTwo("name:iphoneX");
+            }
+            
+            public Product retrieveResult(){
+                return product;
+            }
+        }
+
 - `Director`
-```
-public class Director{
-    @Setter
-    private Builder builder;
-    
-    public void construct(){
-        builder.builderPartOne();
-        builder.builderPartTwo();
-    }
-}
-```
+
+        public class Director{
+            @Setter
+            private Builder builder;
+            
+            public void construct(){
+                builder.builderPartOne();
+                builder.builderPartTwo();
+            }
+        }
+
 
 > 肯德基案例
 
@@ -99,142 +99,141 @@ public class Director{
 > 肯德基案例程序
 
 - `Item`
-```
-// abstract top product
-public interface Item{
-    public String name;
-    public Packing packing();
-    public float price();
-}
-```
+
+        // abstract top product
+        public interface Item{
+            public String name;
+            public Packing packing();
+            public float price();
+        }
+
 - `Packing 封装属性，分离行为`
-```
-public interface Packing{
-    public String pack();
-}
-```
+
+        public interface Packing{
+            public String pack();
+        }
+
 - `Wrapper`
-```
-public class Wrapper implements Packing{
-    public String pack(){
-        retirn "Wrapper";
-    }
-}
-```
+
+        public class Wrapper implements Packing{
+            public String pack(){
+                retirn "Wrapper";
+            }
+        }
+
 - `Bottle`
-```
-public class Bottle implements Packing{
-    public String pack(){
-        return "Bottle";
-    }
-}
-```
+
+        public class Bottle implements Packing{
+            public String pack(){
+                return "Bottle";
+            }
+        }
+
 - `Burger`
-```
-public abstract class Burger implements Item{
-    @Override
-    public Packing packing(){
-        return new Wrapper();
-    }
-    
-    @Override
-    public abstract float price();
-}
-```
+
+        public abstract class Burger implements Item{
+            @Override
+            public Packing packing(){
+                return new Wrapper();
+            }
+            
+            @Override
+            public abstract float price();
+        }
+
 - `ColdDrink`
-```
-public abstract class ColdDrink implements Itme{
-    @Override
-    public Packing packing(){
-        return new Bottle();
-    }
-    
-    @Override
-    public abstract float price();
-}
-```
+
+        public abstract class ColdDrink implements Itme{
+            @Override
+            public Packing packing(){
+                return new Bottle();
+            }
+            
+            @Override
+            public abstract float price();
+        }
+
 - `VeBurger`
-```
-public class VeBurger extends Burger{
-    @Override
-    public float price(){
-        return 25.0f;
-    }
-    
-    @Override
-    public String name(){
-        return "Veg Burger";
-    }
-}
-```
+
+        public class VeBurger extends Burger{
+            @Override
+            public float price(){
+                return 25.0f;
+            }
+            
+            @Override
+            public String name(){
+                return "Veg Burger";
+            }
+        }
+
 - `ChickenBurger`
-```
-public class ChickenBurger extends Burger{
-    @Override
-    public float price(){
-        return 50.5f;
-    }
-    
-    @Override
-    public String name(){
-        return "Coke";
-    }
-}
-```
+
+        public class ChickenBurger extends Burger{
+            @Override
+            public float price(){
+                return 50.5f;
+            }
+            
+            @Override
+            public String name(){
+                return "Coke";
+            }
+        }
+
 - `Pepsi`
-```
-public class Pepsi extends ColdDrink{
-    @Override
-    public float price(){
-        return 35.0f;
-    }
-    
-    @Override
-    public String name(){
-        return "Pepsi";
-    }
-}
-```
+
+        public class Pepsi extends ColdDrink{
+            @Override
+            public float price(){
+                return 35.0f;
+            }
+            
+            @Override
+            public String name(){
+                return "Pepsi";
+            }
+        }
+
 ------------------------------
 - `Meal`
-```
-public class Meal{
-    private List<Item> items = new ArrayList();
-    
-    public void addItem(Item item){
-        items.add(item);
-    }
-    
-    public float getCost(){
-        float cost = 0.0f;
-        for (Item item : items){
-            cost += item.price();
+
+        public class Meal{
+            private List<Item> items = new ArrayList();
+            
+            public void addItem(Item item){
+                items.add(item);
+            }
+            
+            public float getCost(){
+                float cost = 0.0f;
+                for (Item item : items){
+                    cost += item.price();
+                }
+                return cost;
+            }
+            
+            public void showItems(){
+                for (Item item : items){
+                    log.info("Item:{},Packing:{},Price",item.name,item.pack(),item.price());
+                }
+            }
         }
-        return cost;
-    }
-    
-    public void showItems(){
-        for (Item item : items){
-            log.info("Item:{},Packing:{},Price",item.name,item.pack(),item.price());
-        }
-    }
-}
-```
+
 - `MealBuilder`
-```
-public class MealBuilder(){
-    public Meal prepareVegMeal (){
-        Meal meal = new Meal();
-        meal.addItem(new VegBurger());
-        meal.addItem(new Coke());
-        return meal;
-    }
-    
-    public Meal prepareNonVegMeal(){
-        Meal meal = new Meal();
-        meal.addItem(new ChickenBurger());
-        meal.addItem(new Pepsi());
-        return meal;
-    }
-}
-```
+
+        public class MealBuilder(){
+            public Meal prepareVegMeal (){
+                Meal meal = new Meal();
+                meal.addItem(new VegBurger());
+                meal.addItem(new Coke());
+                return meal;
+            }
+            
+            public Meal prepareNonVegMeal(){
+                Meal meal = new Meal();
+                meal.addItem(new ChickenBurger());
+                meal.addItem(new Pepsi());
+                return meal;
+            }
+        }

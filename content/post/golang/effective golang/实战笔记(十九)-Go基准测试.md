@@ -18,16 +18,14 @@ author: "flysnow"
 
 ## 如何编写基准测试
 基准测试代码的编写和单元测试非常相似，它也有一定的规则，我们先看一个示例。
-```
-itoa_test.go
-func BenchmarkSprintf(b *testing.B){
-    num := 10
-    b.ResetTimer()
-    for i:=0; i<b.N;i++{
-        fmt.Sprintf("%d", num)
-    }
-}
-```
+		itoa_test.go
+		func BenchmarkSprintf(b *testing.B){
+		    num := 10
+		    b.ResetTimer()
+		    for i:=0; i<b.N;i++{
+		        fmt.Sprintf("%d", num)
+		    }
+		}
 这是一个基准测试的例子，从中我们可以看出以下规则：
 
 1. 基准测试的代码文件必须以_test.go结尾
@@ -39,12 +37,10 @@ func BenchmarkSprintf(b *testing.B){
 7. b.N是基准测试框架提供的，表示循环的次数，因为需要反复调用测试的代码，才可以评估性能
 
 下面我们运行基准测试，看看效果。
-```
-go test -bench=. -run=none
-BenchmarkSprintf-8      20000000               117 ns/op
-PASS
-ok      flysnow.org/hello       2.474s
-```
+		go test -bench=. -run=none
+		BenchmarkSprintf-8      20000000               117 ns/op
+		PASS
+		ok      flysnow.org/hello       2.474s
 
 运行基准测试也要使用go test命令，不过我们要加上-bench=标记，它接受一个表达式参数，匹配基准测试的函数，`.`表示运行所有基准测试。
 
@@ -54,58 +50,50 @@ ok      flysnow.org/hello       2.474s
 
 以上是测试时间默认是1秒，也就是1秒的时间，调用两千万次，每次调用花费117纳秒。如果想让测试运行的时间更长，可以通过-benchtime指定，比如3秒
 
-```
-go test -bench=. -benchtime=3s -run=none
-BenchmarkSprintf-8      50000000               109 ns/op
-PASS
-ok      flysnow.org/hello       5.628s
-```
+		go test -bench=. -benchtime=3s -run=none
+		BenchmarkSprintf-8      50000000               109 ns/op
+		PASS
+		ok      flysnow.org/hello       5.628s
 可以发现，我们加长了测试时间，测试的次数变多了，但是最终的性能结果：每次执行的时间，并没有太大变化。一般来说这个值最好不要超过3秒，意义不大。
 ## 性能对比
 上面哪个基准测试的例子，其实是一个int类型转为string类型的例子，标准库里还有集中方法，我们看下哪种性能更加。
-```
-func BenchmarkSprintf(b *testing.B){
-	num:=10
-	b.ResetTimer()
-	for i:=0;i<b.N;i++{
-		fmt.Sprintf("%d",num)
-	}
-}
-
-func BenchmarkFormat(b *testing.B){
-	num:=int64(10)
-	b.ResetTimer()
-	for i:=0;i<b.N;i++{
-		strconv.FormatInt(num,10)
-	}
-}
-
-func BenchmarkItoa(b *testing.B){
-	num:=10
-	b.ResetTimer()
-	for i:=0;i<b.N;i++{
-		strconv.Itoa(num)
-	}
-}
-```
+		func BenchmarkSprintf(b *testing.B){
+			num:=10
+			b.ResetTimer()
+			for i:=0;i<b.N;i++{
+				fmt.Sprintf("%d",num)
+			}
+		}
+		
+		func BenchmarkFormat(b *testing.B){
+			num:=int64(10)
+			b.ResetTimer()
+			for i:=0;i<b.N;i++{
+				strconv.FormatInt(num,10)
+			}
+		}
+		
+		func BenchmarkItoa(b *testing.B){
+			num:=10
+			b.ResetTimer()
+			for i:=0;i<b.N;i++{
+				strconv.Itoa(num)
+			}
+		}
 运行基准测试，看看结果
-```
-go test -bench=. -run=none              
-BenchmarkSprintf-8      20000000               117 ns/op
-BenchmarkFormat-8       50000000                33.3 ns/op
-BenchmarkItoa-8         50000000                34.9 ns/op
-PASS
-ok      flysnow.org/hello       5.951s
-```
+		go test -bench=. -run=none              
+		BenchmarkSprintf-8      20000000               117 ns/op
+		BenchmarkFormat-8       50000000                33.3 ns/op
+		BenchmarkItoa-8         50000000                34.9 ns/op
+		PASS
+		ok      flysnow.org/hello       5.951s
 从结果上卡strconv.FormatInt函数最快，其次是strconv.Itoa，最后才是fmt.Sprintf，前两个函数性能达到了最后一个3倍多。那么最后一个函数为什么这么慢，我们再通过-benchmem找到根本原因。
-```
-o test -bench=. -benchmem -run=none
-BenchmarkSprintf-8      20000000               110 ns/op              16 B/op          2 allocs/op
-BenchmarkFormat-8       50000000                31.0 ns/op             2 B/op          1 allocs/op
-BenchmarkItoa-8         50000000                33.1 ns/op             2 B/op          1 allocs/op
-PASS
-ok      flysnow.org/hello       5.610s
-```
+		o test -bench=. -benchmem -run=none
+		BenchmarkSprintf-8      20000000               110 ns/op              16 B/op          2 allocs/op
+		BenchmarkFormat-8       50000000                31.0 ns/op             2 B/op          1 allocs/op
+		BenchmarkItoa-8         50000000                33.1 ns/op             2 B/op          1 allocs/op
+		PASS
+		ok      flysnow.org/hello       5.610s
 -benchmem可以提供每次操作分配内存的次数，以及每次操作分配的字节数。从结果上看，性能高的两个函数，每次操作都是进行1次内存分配，而最慢的那个要分配2次；性能高的每次操作分配2个字节内存，而满的那个函数每次需要分配16个字节内存。
 从这个数据我们知道它为什么这么慢了，内存分配都占用都太高。
 

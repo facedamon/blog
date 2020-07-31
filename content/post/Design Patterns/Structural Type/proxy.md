@@ -30,41 +30,41 @@ author: "java-my-life"
 
 > 静态代理
 
-```
-public interface IUserDao{
-    void save();
-}
-```
-```
-//Readl Object
-public class UserDao implements IUserDao{
-    public void save(){
-        sout("has saved");
-    }
-}
-```
-```
-public class UserDaoProxy implements IUserDao{
-    private IUserDao target;
-    
-    public UserDaoProxy(IUserDao target){
-        this.target = target;
-    }
-    
-    public void save(){
-        target.save();
-    }
-}
-```
-```
-public class JunitTestCase{
-    public void test(){
-        UserDao target = new UserDao();
-        UserDaoProxy proxy = new UserDapProxy(target);
-        proxy.save();
-    }
-}
-```
+
+        public interface IUserDao{
+            void save();
+        }
+
+
+        //Readl Object
+        public class UserDao implements IUserDao{
+            public void save(){
+                sout("has saved");
+            }
+        }
+
+
+        public class UserDaoProxy implements IUserDao{
+            private IUserDao target;
+            
+            public UserDaoProxy(IUserDao target){
+                this.target = target;
+            }
+            
+            public void save(){
+                target.save();
+            }
+        }
+
+
+        public class JunitTestCase{
+            public void test(){
+                UserDao target = new UserDao();
+                UserDaoProxy proxy = new UserDapProxy(target);
+                proxy.save();
+            }
+        }
+
 
 - 缺点: 因为代理对象需要与目标对象实现一样的接口,所以会有很多代理类。很难维护
 
@@ -79,9 +79,9 @@ public class JunitTestCase{
 代理类所在包:java.lang.reflect.Proxy
 JDK实现代理只需要使用newProxyInstance方法,但是该方法需要接受三个参数
 
-```
-static Object newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler h);
-```
+
+        static Object newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler h);
+
 
 参数|说明
 -------- | ---
@@ -89,35 +89,35 @@ ClassLoader loader|指定当前目标对象使用的类加载器
 Class<?>[] interfaces|目标对象实现的接口的类型,使用泛型方式确认类型
 InvocationHandler h|事件处理,执行目标对象的方法时,会触发事件处理器的方法,会把当前执行目标对象的方法作为参数传入
 
-```
-public class ProxyFactory{
-      public static Object getProxyInstance(IUser target){
-        return Proxy.newProxyInstance(
-                target.getClass().getClassLoader(),
-                target.getClass().getInterfaces(),
-                (proxy,method,args)->{
-                    System.out.println("first transaction");
-                    return method.invoke(target,args);
-                }
-        );
-    }
-}
-```
-```
-public class App {
-    private IUser user;
-    @Before
-    public void before(){
-        user = new User();
-    }
 
-    @Test
-    public void test(){
-        IUser proxy = (IUser) ProxyFactory.getProxyInstance(user);
-        proxy.save();
-    }
-}
-```
+        public class ProxyFactory{
+            public static Object getProxyInstance(IUser target){
+                return Proxy.newProxyInstance(
+                        target.getClass().getClassLoader(),
+                        target.getClass().getInterfaces(),
+                        (proxy,method,args)->{
+                            System.out.println("first transaction");
+                            return method.invoke(target,args);
+                        }
+                );
+            }
+        }
+
+
+        public class App {
+            private IUser user;
+            @Before
+            public void before(){
+                user = new User();
+            }
+
+            @Test
+            public void test(){
+                IUser proxy = (IUser) ProxyFactory.getProxyInstance(user);
+                proxy.save();
+            }
+        }
+
 代理对象不需要实现接口，但是目标对象需要实现接口，否则无法动态代理。
 
 > CGLIB
@@ -128,46 +128,46 @@ public class App {
 - Cglib是一个想打的高性能的代码生成包，它可以在运行期扩展Java类与实现Java接口，它广泛的被许多AOP框架使用，为它们提供方法的interception
 - Cglib包的底层是通过使用一个小而块的字节码处理框架ASM来转换字节码生成新的类
 
-```
-public class CglibProxyFactory implements MethodInterceptor {
 
-    private UserDao target;
+        public class CglibProxyFactory implements MethodInterceptor {
 
-    public CglibProxyFactory(UserDao target){
-        this.target = target;
-    }
+            private UserDao target;
 
-    /**
-     * 获取实例
-     * @return
-     */
-    public Object getTargetInstance(){
-        /**
-         * 增强器
-         */
-        Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(target.getClass());
-        enhancer.setCallback(this);
-        return enhancer.create();
-    }
+            public CglibProxyFactory(UserDao target){
+                this.target = target;
+            }
 
-    @Override
-    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-        System.out.println("begin");
-        return method.invoke(target,objects);
-    }
-}
-```
-```
-public class App{
-   @Test
-   public void test(){
-       UserDao target = new UserDao();
-       UserDao proxy = (UserDao) new CglibProxyFactory(target).getTargetInstance();
-       proxy.save();
-   }
-}
-```
+            /**
+            * 获取实例
+            * @return
+            */
+            public Object getTargetInstance(){
+                /**
+                * 增强器
+                */
+                Enhancer enhancer = new Enhancer();
+                enhancer.setSuperclass(target.getClass());
+                enhancer.setCallback(this);
+                return enhancer.create();
+            }
+
+            @Override
+            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                System.out.println("begin");
+                return method.invoke(target,objects);
+            }
+        }
+
+
+        public class App{
+        @Test
+        public void test(){
+            UserDao target = new UserDao();
+            UserDao proxy = (UserDao) new CglibProxyFactory(target).getTargetInstance();
+            proxy.save();
+        }
+        }
+
 
 # 在Spring的AOP编程中:
 如果加入容器的目标对象有实现接口,用JDK代理

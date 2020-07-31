@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>[设计模式 | 创建模式 | 原型模式] - FaceDamon`s Blog</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="java-my-life" /><meta name="description" content="转载自https://www.cnblogs.com/java-my-life/ 通过给出一个原型对象来知名所有创建的对象的类型，然后用复制这" /><meta name="keywords" content="Hugo, theme, even" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.73.0 with theme even" />
+
+
+<link rel="canonical" href="http://facedamon.github.io/post/design-patterns/creation-type/prototype/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="[设计模式 | 创建模式 | 原型模式]" />
+<meta property="og:description" content="转载自https://www.cnblogs.com/java-my-life/ 通过给出一个原型对象来知名所有创建的对象的类型，然后用复制这" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://facedamon.github.io/post/design-patterns/creation-type/prototype/" />
+<meta property="article:published_time" content="2019-10-15T17:22:56+08:00" />
+<meta property="article:modified_time" content="2019-10-15T17:22:56+08:00" />
+<meta itemprop="name" content="[设计模式 | 创建模式 | 原型模式]">
+<meta itemprop="description" content="转载自https://www.cnblogs.com/java-my-life/ 通过给出一个原型对象来知名所有创建的对象的类型，然后用复制这">
+<meta itemprop="datePublished" content="2019-10-15T17:22:56&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-15T17:22:56&#43;08:00" />
+<meta itemprop="wordCount" content="2139">
+
+
+
+<meta itemprop="keywords" content="设计模式," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="[设计模式 | 创建模式 | 原型模式]"/>
+<meta name="twitter:description" content="转载自https://www.cnblogs.com/java-my-life/ 通过给出一个原型对象来知名所有创建的对象的类型，然后用复制这"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">FaceDamon</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/about-me/">
+        <li class="mobile-menu-item">About Me</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">FaceDamon</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about-me/">About Me</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">[设计模式 | 创建模式 | 原型模式]</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2019-10-15 </span>
+        <div class="post-category">
+            <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%BC%8F/"> 设计模式/创建模式 </a>
+            </div>
+          <span class="more-meta"> 约 2139 字 </span>
+          <span class="more-meta"> 预计阅读 5 分钟 </span>
+        <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <blockquote>
+<p>转载自https://www.cnblogs.com/java-my-life/</p>
+</blockquote>
+<hr>
+<ul>
+<li>
+<p>通过给出一个原型对象来知名所有创建的对象的类型，然后用复制这个原型对象的办法创建出更多同类型的对象</p>
+</li>
+<li>
+<p>原型模式结构:原型模式要求对象实现一个可以&quot;克隆&quot;自身的接口,这样就可以通过复制一个实例对象本身来创建一个新的实例.这样一来，通过原型实例创建新的对象，就不再需要关心这个实例本身的类型，只要实现了克隆自身的方法，就可以通过这个方法获取新的对象，而无须再去通过new来创建。</p>
+</li>
+<li>
+<p>两种表现形式:</p>
+<ul>
+<li>简单形式</li>
+<li>cache形式</li>
+</ul>
+</li>
+<li>
+<p>简单形式的原型模式
+<img src="https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/prototype/%E6%9E%B6%E6%9E%84%E5%9B%BE.png" alt="avatar"></p>
+</li>
+<li>
+<p>Prototype(抽象原型):通常油一个接口或抽象类实现。此角色给出所有的具体原型类所需的接口</p>
+</li>
+<li>
+<p>Concrete Prototype(具体原型):被复制的对象。此角色需要实现抽象的原型角色所要求的接口</p>
+</li>
+<li>
+<p>主要解决问题:<strong>在运行期建立和删除原型</strong></p>
+</li>
+<li>
+<p><strong>何时使用:</strong></p>
+<ul>
+<li>当一个系统应该独立于它的产品创建时</li>
+<li>当要实例化的类是在运行时刻指定时</li>
+<li>为了避免创建一个与产品类层次平行的工厂类层次</li>
+<li>当一个类的实例只能有几个不同状态组合中的一种时，建立相应数目的原型并克隆它们可能比每次用合适的状态手工实例化更方便</li>
+</ul>
+</li>
+<li>
+<p>关键代码:</p>
+<ul>
+<li><strong>实现克隆操作，继承Cloneable,重写clone()</strong></li>
+<li><strong>原型模式同样用于隔离类对象的使用者和具体类型之间的耦合关系，它同样要求这些易变类拥有稳定的接口</strong></li>
+</ul>
+</li>
+<li>
+<p>优点:</p>
+<ul>
+<li>性能提高</li>
+<li>避免构造函数的约束</li>
+</ul>
+</li>
+<li>
+<p>缺点:</p>
+<ul>
+<li>配备克隆方法需要对类的功能进行全面考虑，这对于全新的类不是很难，但对于已有的类不一定很容易，特别当一个类引用不支持串行化的间接对象，或者引用含有循环结构的时候</li>
+<li>必须实现Cloneable接口</li>
+</ul>
+</li>
+<li>
+<p>使用场景</p>
+<ul>
+<li>资源优化场景</li>
+<li>类初始化需要消耗非常多的资源，这资源包括数据硬件资源等</li>
+<li>性能和安全的场景</li>
+<li>通过new产生一个对象需要非常繁琐的数据准备或访问权限</li>
+<li>一个对象多个修改者的场景</li>
+<li>一个对象需要提供给其它对象访问，而各个调用者都可能需要修改其值时，使用原型克隆出多个对象供调用者使用</li>
+<li>在实际项目中，原型模式很少单独出现，一般是和工厂方法模式一起出现，通过clone的方法创建一个对象，然后由工厂方法提供提供给调用者</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>案例</p>
+</blockquote>
+<ul>
+<li>
+<p><code>Prototype.Interface</code></p>
+<pre><code>  public interface Prototype{
+      public Object clone();
+  }
+</code></pre>
+</li>
+<li>
+<p><code>ConcretePrototype</code></p>
+<pre><code>  public class ConcretePrototype implements Prototype{
+      public Prototype clone(){
+          Prototype prototype = new ConcretePrototype();
+          return prototype;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>Client</code></p>
+<pre><code>  public class Client{
+      private Prototype prototype;
+        
+      public Client(Prototype prototype){
+          this.prototype = prototype;
+      }
+        
+      public void opertation(Prototype example){
+          Prototype copy = prototype.clone();
+      }
+  }
+</code></pre>
+</li>
+</ul>
+<blockquote>
+<p>浅克隆&amp;深克隆</p>
+</blockquote>
+<ul>
+<li>Object类提供protected Object clone()方法对对象进行复制.当使用Object类的clone()方法来复制一个对象时，此对象对其他对象也同时会被复制一份</li>
+<li>克隆满足的条件:clone()方法将对象复制了一份并返还给调用者.所谓&quot;复制&quot;的含义与clone()方法是怎么实现的，一般而言，clone方法满足以下的描述</li>
+</ul>
+<ol>
+<li>对任何的对象x,都有:x.clone != x.换言之，克隆对象与元对象不是同一个对象</li>
+<li>对任何的对象x,都有:x.clone().getClass() == x.getClass(),换言之,克隆对象与原对象的类型一样</li>
+<li>如果对象x的equals()方法定义其恰当的话，那么x.clone().equals(x)应当成立的.</li>
+</ol>
+<ul>
+<li>
+<p>浅克隆和深克隆</p>
+<ul>
+<li>浅克隆:只负责克隆按值传递数据(比如基本数据类型,String类型),而不复制它所引用的对象,换言之,所有的对其他对象的引用都仍然指向原来的对象</li>
+<li>深度克隆:那些引用其他对象的变量将指向被复制过的新对象,而不再是原有的那些被引用的对象.换言之,<strong>深度克隆把要复制的对象所引用的对象都复制了一遍</strong>.深度克隆要深入到多少层,是一个不易确定的问题.在决定以深度克隆的方式复制一个对象的时候,必须决定对间接复制的对象时采取浅度克隆还是继续采用深度克隆.因此,在采用深度克隆时,需要决定多深，此外在深度克隆时,很可能会出现循环引用的问题,必须小心处理.</li>
+</ul>
+</li>
+<li>
+<p>利用序列化实现深度克隆:把对象写到流里的过程是序列化(Serialzation)过程;而把对象从流中读出来的过程则叫反序列化(Deserialzation)过程.应当指出的是,写到流里的是对象的一个拷贝,而原对象仍然存在于JVM里面</p>
+<pre><code>  public Object deepClone() throws IOException,ClassNotFoundException{
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStram(bos);
+      oos.writeObject(this);
+        
+      ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+      ObjectInputStream ois = new ObjectInputStream(bis);
+      return ois.readObject();
+  }
+</code></pre>
+</li>
+<li>
+<p>浅度克隆显然比深度克隆更容易实现,因为Java语言的所有类都会继承一个clone方法,而这个clone所做的正式浅度克隆.有一些对象,比如Thread或者Socket对象，是不能简单复制或共享的.不管是使用浅度克隆还是深度克隆,只要设计这样的间接对象,就必须把见解对象设置成transient而不予复制;或者由程序自行创建出相当的同种对象,权且当作复制使用</p>
+</li>
+</ul>
+<blockquote>
+<p>案例2</p>
+</blockquote>
+<ul>
+<li>我们将创建一个抽象类Shape和扩展了Shape类的实体类</li>
+<li>下一步定义ShapeCache,该类把shape对象存储在一个hashtable中，并在请求的时候返回它们的克隆</li>
+<li>PrototypePatternDemo ,演示类使用试用ShapeCache来获取Shape对象</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/facedamon/MarkDownPhotos@master/Design-Patterns/Creation-Type/prototype/%E6%A1%88%E4%BE%8B.png" alt="avatar"></p>
+<blockquote>
+<p>案例2代码</p>
+</blockquote>
+<ul>
+<li>
+<p><code>Abstract Shape</code></p>
+<pre><code>  public abstract class Shape Implements Cloneable{
+      @Setter
+      @Getter
+      private String id;
+        
+      @Getter
+      @Construct
+      private String type;
+        
+      @Override
+      public Object clone(){
+          Object clone = null;
+          try{
+              clone = super.clone();
+          }catch(CloneNotSupportedException e){
+              e.printStackTrace();
+          }
+          return clone;
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>Rectangle</code></p>
+<pre><code>  pulic class Rectangle extends Shape{
+      public Rectangle(){
+          type = &quot;Rectangle&quot;;
+      }
+        
+      @Override
+      public void draw(){
+          log.info(&quot;Inside Rectangle:draw() method.&quot;);
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>Square</code></p>
+<pre><code>  public class Square extenda Shape{
+      public Square(){
+          type = &quot;Square&quot;;
+      }
+        
+      @Override
+      public void draw(){
+          log.info(&quot;Inside Square::draw() method.&quot;);
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>Circle</code></p>
+<pre><code>  public class Circle extends Shape{
+      public Circle(){
+          type = &quot;Circle&quot;;
+      }
+        
+      @Override
+      public void draw(){
+          log.info(&quot;Inside Circle::draw() method.&quot;);
+      }
+  }
+</code></pre>
+</li>
+<li>
+<p><code>ShapeCache</code></p>
+<pre><code>  public class ShapeCache{
+      private static Hashtable&lt;String,Shape&gt; shapeMap = new Hashtable();
+        
+      public static Shape getShape (String shapeId){
+          Shape cachedShape = shapeMap.get(shapeId);
+          return (Shape) cachedShape.clone();
+      }
+        
+      public static void loadCache(){
+          Circle circle = new Circle();
+          circle.setId(&quot;1&quot;);
+          shapeMap.put(circle.getId,circle);
+            
+          Square square = new Square();
+          square.setId(&quot;2&quot;);
+          shapeMap.put(square.getId(),square);
+            
+          Rectangle rectangle = new Rectangle();
+          rectabgle.setId(&quot;3&quot;);
+          shapeMap.put(rectangle.getId(),rectangle);
+      }
+        
+  }
+</code></pre>
+</li>
+</ul>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">java-my-life</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2019-10-15
+        
+    </span>
+  </p>
+  <p class="copyright-item">
+      <span class="item-title">原始文档</span>
+      <span class="item-content"><a class="link-to-markdown" href="http://facedamon.github.io/post/design-patterns/creation-type/prototype/index.md" target="_blank">查看本文 Markdown 版本 »</a></span>
+    </p>
+  <p class="copyright-item">
+    <span class="item-title">许可协议</span>
+    <span class="item-content"><a rel="license noopener" href="http://www.gnu.org/licenses/" target="_self"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)"></img></a></span>
+  </p>
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/design-patterns/structural-type/proxy/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">[设计模式 | 结构模式 | 代理模式]</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/design-patterns/creation-type/builder/">
+            <span class="next-text nav-default">[设计模式 | 创建模式 | 构建模式]</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:facedamon@163.com" class="iconfont icon-email" title="email"></a>
+      <a href="http://github.com/facedamon" class="iconfont icon-github" title="github"></a>
+  <a href="http://facedamon.github.io/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv"> 本站总访问量 <span id="busuanzi_value_site_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次 </span>
+      <span class="division">|</span>
+    <span id="busuanzi_container_site_uv"> 本站总访客数 <span id="busuanzi_value_site_uv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 人 </span>
+  </div>
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">FaceDamon</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  <script src="/lib/highlight/highlight.pack.js?v=20171001"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/raphael@2.2.7/raphael.min.js" integrity="sha256-67By+NpOtm9ka1R6xpUefeGOY8kWWHHRAKlvaTJ7ONI=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/flowchart.js@1.8.0/release/flowchart.min.js" integrity="sha256-zNGWjubXoY6rb5MnmpBNefO0RgoVYfle9p0tvOQM+6k=" crossorigin="anonymous"></script><script></script><script src="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.js" integrity="sha256-4O4pS1SH31ZqrSO2A/2QJTVjTPqVe+jnYgOWUVr7EEc=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js" integrity="sha256-oI+elz+sIm+jpn8F/qEspKoKveTc5uKeFHNNVexe6d8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/underscore@1.8.3/underscore-min.js" integrity="sha256-obZACiHd7gkOk9iIL/pimWMTJ4W/pBsKu+oZnSeBIek=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.js" integrity="sha384-8748Vn52gHJYJI0XEuPB2QlPVNUkJlJn9tHqKec6J3q2r9l8fvRxrgn/E5ZHV0sP" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bramp/js-sequence-diagrams@2.0.1/dist/sequence-diagram-min.css" integrity="sha384-6QbLKJMz5dS3adWSeINZe74uSydBGFbnzaAYmp+tKyq60S7H2p6V7g1TysM5lAaF" crossorigin="anonymous">
+
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+  <script type="text/javascript">
+    window.MathJax = {
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      TeX: {equationNumbers: {autoNumber: "AMS"}},
+      showProcessingMessages: false,
+      messageStyle: 'none'
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"  integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
