@@ -31,7 +31,7 @@ weight: 50
 
 # 版权说明
 
-&emsp;&emsp;<a rel="license noopener" href="http://www.gnu.org/licenses/" target="_self"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square)"></img></a>
+&emsp;&emsp;<a rel="license noopener" href="http://www.gnu.org/licenses/" target="_self"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square"></img></a>
 
 # 志同道合
 
