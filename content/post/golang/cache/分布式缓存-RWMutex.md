@@ -88,28 +88,17 @@ author: "facedamon"
 
 &emsp;&emsp;Group是geec最核心的数据结构，负责与用户的交互，并且控制缓存值存储和获取的流程。
 
-```flowchart
-st=>start: Start|past:>http://www.google.com[blank]
-e=>end: End:>http://www.google.com
-op1=>operation: My Operation|past
-op2=>operation: Stuff|current
-sub1=>subroutine: My Subroutine|invalid
-cond=>condition: Yes
-or No?|approved:>http://www.google.com
-c2=>condition: Good idea|rejected
-io=>inputoutput: catch something...|request
+		接收key --> 检查是否被缓存 ---是---> 返回缓存值(1)
+						|否
+						|------>是否应当从远程节点获取 ------> 与远程节点交互 ---> 返回缓存值(2)
+									｜否
+									｜------> 调用`回调函数`，获取值并添加到缓存 --> 返回缓存值(3)
 
-st->op1(right)->cond
-cond(yes, right)->c2
-cond(no)->sub1(left)->op1
-c2(yes)->io->e
-c2(no)->op2->e
-		
-		&emsp;&emsp;接下来我们将实现流程(1)和(3)，远程交互的部分后续再实现。
-		
-		## 回调Getter
-		
-		&emsp;&emsp;我们思考一下，如果缓存不存在，应该从数据源(文件、数据库等)获取数据并添加到缓存中。geec是否应该支持多种数据源的配置呢？不应该，一是数据源的种类太多，没办法实现；二是扩展性不好。**如果从源头获取数据，应该是用户决定的事情，**我们就把这件事交给用户好了。因此，我们设计了一个回调函数(callback)，在缓存不在时，调用这个函数，得到源数据。
+&emsp;&emsp;接下来我们将实现流程(1)和(3)，远程交互的部分后续再实现。
+
+## 回调Getter
+
+&emsp;&emsp;我们思考一下，如果缓存不存在，应该从数据源(文件、数据库等)获取数据并添加到缓存中。geec是否应该支持多种数据源的配置呢？不应该，一是数据源的种类太多，没办法实现；二是扩展性不好。**如果从源头获取数据，应该是用户决定的事情，**我们就把这件事交给用户好了。因此，我们设计了一个回调函数(callback)，在缓存不在时，调用这个函数，得到源数据。
 		
 		```go
 		package geec
