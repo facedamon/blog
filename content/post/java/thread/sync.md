@@ -1,11 +1,11 @@
 ---
-title: "[多线程 | 乐观锁与悲观锁]"
+title: "[Java | 乐观锁与悲观锁]"
 date: 2021-01-02T17:28:56+08:00
 #lastmod: 2019-08-30T01:37:56+08:00
 toc: true
 draft: false
-tags: ["多线程"]
-categories: ["多线程/锁"]
+tags: ["Java"]
+categories: ["Java/锁"]
 author: "facedamon"
 ---
 
@@ -214,7 +214,7 @@ author: "facedamon"
 
 - 功能限制
 
-&emsp;&emsp;CAS的功能是比较受限的，例如CCAS只能保证单个变量操作的原子性，这意味着：
+&emsp;&emsp;CAS的功能是比较受限的，例如CAS只能保证单个变量操作的原子性，这意味着：
 
 1. 原子性不一定能保证线程安全，例如在Java中需要与volatile配合来保证线程安全
 2. 当涉及到多个变量时，CAS也无能为力
