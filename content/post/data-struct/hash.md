@@ -5,7 +5,7 @@ date: 2021-01-02T14:03:56+08:00
 toc: true
 draft: false
 tags: ["数据结构与算法"]
-categories: ["数据结构与算法/散列表"]
+categories: ["数据结构与算法"]
 author: "facedamon"
 ---
 

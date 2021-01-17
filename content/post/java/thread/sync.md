@@ -5,7 +5,7 @@ date: 2021-01-02T17:28:56+08:00
 toc: true
 draft: false
 tags: ["Java"]
-categories: ["Java/锁"]
+categories: ["Java/多线程"]
 author: "facedamon"
 ---
 

@@ -5,7 +5,7 @@ date: 2020-07-28T16:26:56+08:00
 toc: true
 draft: false
 tags: ["数据结构与算法"]
-categories: ["数据结构与算法/树"]
+categories: ["数据结构与算法"]
 author: "facedamon"
 ---
 
