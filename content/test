@@ -1,0 +1,544 @@
+---
+title: "[设计模式 | 创建 | 建造者模式]"
+date: 2020-10-27T17:34:56+08:00
+lastmod: 2021-04-28T17:40:56+08:00
+toc: true
+draft: false
+tags: ["设计模式"]
+categories: ["设计模式/创建"]
+author: "facedamon"
+---
+
+# 摘要
+
+&emsp;&emsp;Builder Pattern使用多个简单的对象一步一步构建一个复杂的对象。
+
+# 介绍
+
+- **意图**：将一个复杂的构建与其表示相分离，使得同样的构建过程可以创建不同的表示。
+- **主要解决**：主要解决在软件系统中，有时候面临着"一个复杂对象"的创建工作，其通常由各个不分的子对象用一定的算法构成；由于需求的变化，这个复杂对象的各个部分疆场面临着剧烈的变化，但是将它们组合在一起的算法却相对稳定。
+- **关键代码**：`建造者`：创建和提供实例，`导演`：管理建造出来的比例的依赖关系。
+- **应用实例**：去肯德基、汉堡、可乐、薯条、炸鸡翅等是不变的，而其组合是经常变化的，产出很多套餐
+- **优点**：建造者独立、易扩展。便于控制细节风险
+- **缺点**：产品必须有共同点，范围有限制。如内部变化复杂，会有很多的建造类
+- **使用场景**：需要生成的对象具有复杂的内部结构；需要生成的对象内部属性本身相互依赖
+
+
+# 实现
+
+&emsp;&emsp;我们假设一个快餐店的商业案例，其中，一个典型的套餐可以是汉堡(Burger)和一杯冷饮(COld drink)。汉堡可以是素食汉堡(Veg Burger)或鸡肉汉堡(Chicken Burger)，它们是包在纸盒中。冷饮可以是可口可乐(coke)或百事可乐(pspsi)，它们是装载瓶子中。
+
+&emsp;&emsp;我们将创建一个表示食物条目的item接口和实现item接口的实体类，以及表示食物包装的Packing接口和实现Packing接口的实体类，汉堡是包在纸盒中，冷饮是装在瓶子中。
+
+&emsp;&emsp;创建一个Meal套餐类，表示item食物条目的集合，创建一个MealBuilder建造者，通过不同的item菜单来构建不同的meal套餐。
+
+![avatar](https://cdn.jsdelivr.net/gh/facedamon/markdownps2@master/design-pattern/create/20201015-builder-pattern.svg)
+
+## 创建一个表示食物条目和食物包装的接口
+
+    package interface;
+
+    public interface Item {
+        String name();
+        Packing packing();
+        float price();
+    }
+
+    public interface Packing {
+        String pack();
+    }
+
+## 创建实现Packing的实体类
+
+    package impl;
+
+    public class Wrapper implements Packing {
+        @Override
+        public String packing() {
+            return "Wrapper";
+        }
+    }
+
+    public class Bottle implements Packing {
+        @Override
+        public String packing() {
+            return "Bottle";
+        }
+    }
+
+## 创建实现Item条目的抽象类
+
+    public abstract class Burger implements Item {
+        @Override
+        public Packing packing() {
+            return new Wrapper();
+        }
+
+        @Override
+        public abstract float price();
+    }
+
+    public abstract class ColdDrink implements Item {
+        @Override
+        public Packing packing() {
+            return new Bottle();
+        }
+
+        @Override
+        public abstract float price();
+    }
+
+## 创建Burger和ColdDrink的具体实现
+
+    package impl;
+
+    public class VegBurger extends Burger {
+        @Override
+        public float price {
+            return 25.0f;
+        }
+
+        @Override
+        public String name() {
+            return "Veg Burger";
+        }
+    }
+
+    public class ChickenBueger extends Burger {
+        @Override
+        public float price() {
+            return 50.5f;
+        }
+
+        @Override
+        public String name() {
+            return "Chicken Burger";
+        }
+    }
+
+    public class Coke extends ColdDrink {
+        @Override
+        public float price() {
+            return 30.0f;
+        }
+
+        @Override
+        public String name() {
+            return "Coke";
+        }
+    }
+
+    public class Pepsi exntends ColdDrink {
+        @Override
+        public float price() {
+            return 35.0f;
+        }
+
+        @Override
+        public String name() {
+            return "Pepsi";
+        }
+    }
+
+## 创建Meal套餐
+
+    package default;
+
+    import java.util.ArrayList;
+    import java.util.List;
+
+    public class Meal {
+        private List<Item> items = new ArrayList<Item>();
+
+        public void addItem(Item item) {
+            items.add(item);
+        }
+
+        public float getCost() {
+            float cost = 0.0f;
+            for (Item item : items) {
+                cost += item.price();
+            }
+            return cost;
+        }
+
+        public void showItems() {
+            for (Item item: items) {
+                sout(String.format("Item: %s, Packing: %s, Price: %f", item.name(), item.packing().pack(), item.price()));
+            }
+        }
+    }
+
+## 创建一个MealBuilder构建者，负责创建Meal套餐
+
+    package default;
+
+    public class MealBuilder {
+        public Meal prepareVegMeal() {
+            Meal meal = new Meal();
+            meal.addItem(new VegBurger());
+            meal.addItem(new Coke());
+            return meal;
+        }
+
+        public Meal prepareNonVegMeal() {
+            Meal meal = new Meal();
+            meal.addItem(new ChickenBurger);
+            meal.addItem(new Pepsi());
+            return meal;
+        }
+    }
+
+## 创建demo
+
+    package demo;
+
+    public class BuilderPatternDemo {
+        public static void main(String[] args) {
+            MealBuilder mealBuilder = new MealBuilder();
+            Meal vegMeal = mealBuilder.prepareVegMeal();
+            sout("Veg Meal: %s, total cost: %f", vegMeal.showItems(), vegMeal.getCost());
+
+            Meal nonVegMeal = mealBuilder.prepareNonVegMeal();
+            sout("non-veg meal: %s, total cost: %f", nonVegMeal.showItems(), nonVegMeal.getCost());
+        }
+    }
+
+## 输出
+
+&emsp;&emsp;`Veg Meal`
+
+&emsp;&emsp;`Item: Veg Burger, Packing: Wrapper, Price: 25.0`
+
+&emsp;&emsp;`Item: Coke, Packing: Bottle, Price: 30.0`
+
+&emsp;&emsp;`total cost: 55.0`
+
+</br>
+
+&emsp;&emsp;`non-veg meal`
+
+&emsp;&emsp;`Item: Chicken Burger, Packing: Wrapper, Price: 50.5`
+
+&emsp;&emsp;`Item: Packing: Bottle, Price: 35.0`
+
+&emsp;&emsp;`total cost: 85.5`
+
+# Golang版本
+
+    package car
+
+    type Speed float64
+
+    const(
+        MPH Speed = 1
+        KPH       = 1.60934
+    )
+
+    type Color string
+
+    const (
+        BlueColor Color = "blue"
+        GreenColor      = "green"
+        RedColor        = "red"
+    )
+
+    type Wheels string
+
+    const (
+        SportsWHeels Wheels = "sports"
+        SteelWheels         = "steel"
+    )
+
+    type Builder interface {
+        Color(Color) Builder
+        Wheels(Wheels) Builder
+        TopSpeed(Speed) Builder
+        Build() Interface
+    }
+
+    type Interface interface {
+        Drive() error
+        Stop() error
+    }
+
+    type bu struct {
+         c Color
+         w Wheels
+         t Speed
+    }
+
+    func NewBuilder() *bu {
+            return &bu{}
+    }
+
+    func (b *bu) Color(c Color) Builder {
+            b.c = c
+            return b
+    }
+
+    func (b *bu) Wheels(w Wheels) Builder {
+            b.w = w
+            return b
+    }
+
+    func (b *bu) TopSpeed(t Speed) Builder {
+            b.t = t
+            return b
+    }
+
+    func (b *bu) Build() Interface {
+            return b
+    }
+
+    func (b *bu) Drive() error {
+            fmt.Printf("%s\n", "i am driving")
+            return nil
+    }
+
+    func (b *bu) Stop() error {
+            return nil
+    }
+
+    func (b *bu) Paint(c Color) Builder {
+            b.c = c
+            return b
+    }
+
+## 使用
+
+    assembly := car.NewBuilder().Paint(car.RedColor)
+
+    familyCar := assembly.Wheels(car.SportsWheels).TopSpeed(50 * car.MPH).Build()
+    familyCar.Drive()
+
+    sportsCar := assembly.Wheels(car.SteelWheels).TopSpeed(150 * car.MPH).Build()
+    sportsCar.Drive()
+
+## 当构造函数有多个参数时，考虑改用构建器
+
+&emsp;&emsp;客户端不直接生成所需的对象，而是使用所有必须的参数调用构造函数或静态工厂，并获得一个builder对象。然后，客户端在构建器对象上调用像setter这样的方法来设置每个感兴趣的可选参数。最后，客户端调用一个无参数的构建方法来生成对象，这通常是不可变的。**构建器通常是它构建的类的静态成员类**。
+
+    public class NutritionFacts implements Serializable {
+        private final int servingSize;
+        private final int servings;
+        private final int calories;
+        private final int fat;
+        private final int sodium;
+        private final int carbohydrate;
+
+        public static class Builder {
+            // Required parameters
+            private final int servingSize;
+            private final int servings;
+            // Optional parameters - initialized to default values
+            private int calories = 0;
+            private int fat = 0;
+            private int sodium = 0;
+            private int carbohydrate = 0;
+
+            public Builder(int servingSize, int servings) {
+                this.servingSize = servingSize;
+                this.servings = servings;
+            }
+
+            public Builder calories(int val) {
+                calories = val;
+                return this;
+            }
+
+            public Builder fat(int val) {
+                fat = val;
+                return this;
+            }
+
+            public Builder sodium(int val) {
+                sodium = val;
+                return this;
+            }
+
+            public Builder carbohydrate(int val) {
+                carbohydrate = val;
+                return this;
+            }
+
+            public NutritionFacts build() {
+                return new NutritionFacts(this);
+            }
+        }
+
+        private NutritionFacts(Builder builder) {
+            servingSize = builder.servingSize;
+            servings = builder.servings;
+            calories = builder.calories;
+            fat = builder.fat;
+            sodium = builder.sodium;
+            carbohydrate = builder.carbohydrate;
+        }
+    }
+
+&emsp;&emsp;`NutritionFacts`类是不可变的，所有参数默认值都在一个位置。构建器的setter方法返回构建器本身，这样就可以链式调用，从而得到一个流畅的API。
+
+    NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8)
+                    .calories(100).sodium(35).carbohydrate(27)
+                    .build();
+
+&emsp;&emsp;若实体数量较多时，内嵌静态类的方式还是比较冗长。可将构建器独立出来，广泛适应多个实体类。
+
+    public class EntityCreator<T> {
+        private Field[] fieldArray;
+        private Class<T> className;
+        private T entityObj;
+
+        public EntityCreator(Class<T> className) throws Exception {
+            this.fieldArray = className.getDeclaredFields();
+            this.className = className;
+            Constructor<T> constructor = className.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            this.entityObj = constructor.newInstance();
+        }
+
+        public EntityCreator<T> setValue(String paramName, Object paramValue) throws Exception {
+            for (Field field : fieldArray) {
+                if (field.getName().equals(paramName)) {
+                    PropertyDescriptor descriptor = new PropertyDescriptor(field.getName(), className);
+                    Method method = descriptor.getWriteMethod();
+                    method.invoke(entityObj, paramValue);
+                }
+            }
+            return this;
+        }
+
+        public T build() {
+            return entityObj;
+        }
+    }
+
+&emsp;&emsp;如此，可移除整个Builder类，NutritionFacts类保留无参无方法体的私有构造；类成员必须实现setter和getter
+
+    @Setter
+    @Getter
+    public class NutritionFacts {
+        private final int servingSize;
+        private final int servings;
+        private final int calories;
+        private final int fat;
+        private final int sodium;
+        private final int carbohydrate;
+
+        private NutritionFacts() {}
+    }
+
+- 案例
+
+</br>
+
+    NutritionFacts cocaCola = new EntityCreator<>(NutritionFacts.class)
+        .setValue("servingSize",240)
+        .setValue("servings",8)
+        .setValue("calories",100)
+        .setValue("sodium",35)
+        .setValue("carbohydrate",27).build();
+
+&emsp;&emsp;建造者模式非常适合于类层次结构。使用构建器的并行层次结构，每个构建器都嵌套在相应的类中。抽象类有抽象类构建器；具体类有具体类构建器。例如，考虑一个在层次结构处于最低端的抽象类，它代表各种比萨饼: 
+
+    public abstract class Pizza {
+        public enum Topping {HAM, MUSHROOM, ONION, PEPPER, SAUSAGE}
+        final Set<Topping> toppings;
+
+        abstract static class Builder<T extends Builder<T>> {
+            EnumSet<Topping> toppings = EnumSet.noneOf(Topping.class);
+
+            public T addTopping(Topping topping) {
+                toppings.add(Objects.requireNonNull(topping));
+                return self();
+            }
+
+            abstract Pizza build();
+
+            protected abstract T self();
+        }
+
+        Pizza(Builder<?> builder) {
+            toppings = builder.toppings.clone();
+        }
+    }
+
+&emsp;&emsp;请注意，`Pizza.Builder`是具有递归类型参数的泛型类型。这与抽象self方法一起，允许方法链接在子类中正常工作，而不需要强制转换。对于Java缺少自类型这一事实，这种变通方法成为模拟自类型习惯用法。这里有两个具体的比萨子类，一个是标准的纽约风格，另一个是calzone。前者有一个所需的大小参数，而后者望你指定酱料应该是内部还是外部：
+
+    public class MyPizza extends Pizza{
+        public enum Size {SMALL, MEDIUM, LARGE}
+
+        private final Size size;
+
+        public static class Builder extends Pizza.Builder<Builder> {
+            private final Size size;
+
+            public Builder(Size size) {
+                this.size = Objects.requireNonNull(size);
+            }
+
+            @Override
+            MyPizza build() {
+                return new MyPizza(this);
+            }
+
+            @Override
+            protected Builder self() {
+                return this;
+            }
+        }
+
+        private MyPizza(Builder builder) {
+            super(builder);
+            size = builder.size;
+        }
+    }
+
+    public class Calzone extends Pizza{
+        private final boolean sauceInside;
+
+        public static class Builder extends Pizza.Builder<Builder> {
+            private boolean sauceInside = false;
+
+            public Builder sauceInside() {
+                sauceInside = true;
+                return this;
+            }
+
+            @Override
+            Calzone build() {
+                return new Calzone(this);
+            }
+
+            @Override
+            protected Builder self() {
+                return this;
+            }
+        }
+
+        Calzone(Builder builder) {
+            super(builder);
+            sauceInside = builder.sauceInside;
+        }
+    }
+
+&emsp;&emsp;注意，每个子类的构建器中的构建方法声明为返回正确的子类：构建的方法`MyPizza.Builder`返回`MyPizza`，而在`Calzone.Builder`则返回`Calzone`。这种技术称为协变返回类型，其中一个子类方法声明为返回超类中声明的返回类型的子类型。它允许客户使用这些构造器，而不需要强制转换。这些[层次构建器]的客户代码与简单的`NutritionFacts`构建器的代码基本相同。
+
+    @Test
+    public void test2() throws Exception {
+        MyPizza pizza = new MyPizza.Builder(MyPizza.Size.SMALL)
+                .addTopping(Pizza.Topping.SAUSAGE)
+                .addTopping(Pizza.Topping.ONION)
+                .build();
+        Calzone calzone = new Calzone.Builder()
+                .addTopping(Pizza.Topping.HAM)
+                .sauceInside()
+                .build();
+    }
+
+&emsp;&emsp;与构造函数相比，构造函数的一个小优点是构造函数可以有多个变量参数，因为每个参数都是自己的方法中指定的。或者，构建器可以将传递给一个方法的多个调用的参数聚合到单个字段中。
+
+- 构建者模式非常灵活。一个构建器可以多次用于构建多个对象。构建器的参数可以在构建方法的调用之间进行调整，以改变创建的对象。构建器可以在创建对象时自动填充某些字段。
+- 构建者模式也有缺点。为了创建一个对象，你必须首先创建它的构建器。虽然在实际应用中创建这个构建器的成本可能并不显著，但在以性能为关键的场景下，这可能会是一个问题。而且，建造者模式比可伸缩构造函数模式更冗长，因此只有在有足够多的参数时才值得使用。如果你以构造函数或静态工厂开始，直至类扩展到参数数量无法控制的程度时，也会切换到构建器，但是过时的构造函数或静态工厂将很难处理。因此，最好一开始就从构建器开始。
+
